@@ -39,15 +39,6 @@ class ReflectanceSensorArray:
 
         print(f"Time for Sensor 6 to go LOW: {duration:.10f} seconds")
 
-    def detect_pattern(self):
-        """Detects a specific pattern from the sensor readings."""
-        sensor_values = self.read_sensors()
-        print(f"Sensor Pattern: {sensor_values}")
-
-        # Example: Perform operation if a specific pattern is detected
-        if np.array_equal(sensor_values, np.array([0, 1, 0, 1, 0, 1, 0, 1, 0])):  # Modify as needed
-            self.perform_gpio_operation()
-
     def cleanup(self):
         """Cleans up the GPIO pins."""
         GPIO.cleanup()
@@ -61,7 +52,13 @@ def main():
 
     try:
         while True:
-            sensor_array.detect_pattern()
+            # Read sensor values and output them
+            sensor_values = sensor_array.read_sensors()
+            print(sensor_values)  # This can be sent to another program instead of just printing
+            
+            # Example of using the perform_gpio_operation if needed
+            sensor_array.perform_gpio_operation()
+            
             time.sleep(0.1)  # Small delay to avoid overloading the CPU
             
     except KeyboardInterrupt:
