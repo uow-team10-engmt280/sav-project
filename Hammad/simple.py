@@ -3,7 +3,7 @@ import time
 
 class SAV:
     def __init__(self):
-        # GPIO setup 
+        # GPIO setup based on your provided mappings
         self.distance_sensor_gpio = 2  # Output of range sensor
         self.arm_servo_gpio = 0        # Servo Control
         self.grip_servo_gpio = 5       # Mini Servo Control
@@ -15,6 +15,7 @@ class SAV:
         # State tracking
         self.state = "START"
         self.distance_sensor_triggered = 0
+        self.timeout_start = None
         self.timeout_duration = 5  # Timeout duration in seconds
         self.motor_speed_normal = 50  # Example speed value for normal movement
         self.motor_speed_turn = 25    # Example speed value for turning
@@ -83,18 +84,27 @@ class SAV:
             time.sleep(1)
             self.arm_pwm.ChangeDutyCycle(7.5)  # Return arm to neutral
 
+    def start_timeout(self):
+        self.timeout_start = time.time()
+        self.state = "TIMEOUT"
+
+    def check_timeout(self):
+        if self.timeout_start is not None and (time.time() - self.timeout_start) > self.timeout_duration:
+            self.timeout_start = None  # Reset timeout
+            self.state = "MOVING_AGAIN"
+
     def run(self):
         while True:
-            if GPIO.input(self.distance_sensor_gpio):
+            if self.state != "TIMEOUT" and GPIO.input(self.distance_sensor_gpio):
                 self.distance_sensor_triggered += 1
                 if self.distance_sensor_triggered == 1:
                     self.stop()
                     self.handle_object("pickup")
-                    self.state = "MOVING_AGAIN"  # Continue moving after picking up
+                    self.start_timeout()  # Start timeout after pickup
                 elif self.distance_sensor_triggered == 2:
                     self.stop()
                     self.handle_object("dropoff")
-                    self.state = "MOVING_AGAIN"  # Continue moving after dropping off
+                    self.start_timeout()  # Start timeout after dropoff
                     break  # End operation after drop-off
 
             if self.state == "START":
@@ -110,6 +120,10 @@ class SAV:
 
             elif self.state == "MOVING_AGAIN":
                 self.move()
+
+            elif self.state == "TIMEOUT":
+                self.move()  # Continue moving during the timeout
+                self.check_timeout()
 
             time.sleep(0.1)  # Small delay to prevent excessive CPU usage
 
