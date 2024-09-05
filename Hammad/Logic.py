@@ -21,11 +21,11 @@ class SAV:
         self.timeout_start = None
 
     def read_line_sensor(self):
-        # Simulate reading line sensor
+        # Simulate reading line sensor, if statments to choose what to do.
         pass
 
     def check_distance_sensor(self):
-        # Simulate checking distance sensor
+        # If sensor is high transition to stop and then pickup left or right based on camera
         pass
 
     def move(self):
@@ -37,13 +37,23 @@ class SAV:
         print("Turning at reduced speed")
 
     def stop(self):
-        # Simulate stopping
+        # If stopped and line sensor is high, transition to pickup_obkect
         print("Stopping")
 
     def pickup_object(self):
-        # Simulate picking up object
+        # Based on camera input information, rotate arm left or right
+        # Close the grip
+        # Rotate arm into original position
+        # Resume Move state
         print("Picking up object")
 
+    def dropoff_object(self):
+        # Based on camera input information, rotate arm left or right
+        # Open the grip
+        # Rotate arm into original position
+        # Resume Move state
+        print("Dropping off object")
+        
     def line_sensor_timeout(self):
         # Handle line sensor timeout
         if self.timeout_start is None:
