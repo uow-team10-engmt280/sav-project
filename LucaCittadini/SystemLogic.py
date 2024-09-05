@@ -7,7 +7,7 @@ then correspond to particular motor speeds
 
 from time import time
 import numpy as np
-# from MachineVisionMain import MV
+# from MachineVisionMain import MV FIXME
 from typing import Protocol
 
 
@@ -68,7 +68,7 @@ class IDLE:
 class LISTENING:
     print('Entered new state successfully. \n')
     
-    # TParray: list[int] = MV() # FIXME might want to give a different name
+    # TParray: list[int] = MV() FIXME
 
     # turnOne: int = TParray(0)
     # pickUpSideOne: int = TParray(1)
