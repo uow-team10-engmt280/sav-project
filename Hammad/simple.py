@@ -49,6 +49,15 @@ class SAV:
         self.dropoff_direction = self.panel_directions[1][1]  # Direction for dropoff (R/L)
         self.dropoff_lane = self.panel_directions[1][0]       # Lane for dropoff (R/L)
 
+        global line_Sensor_forward = [0,0,0,1,1,1,0,0,0]
+        global line_Sensor_left = [1,1,1,0,0,0,0,0,0]
+        global line_Sensor_right = [0,0,0,0,0,0,1,1,1]
+        global line_Sensor_slight_offtrack_left = [0,1,1,1,0,0,0,0,0]
+        global line_Sensor_slight_offtrack_right = [0,0,0,0,0,1,1,1,0]
+        global line_Sensor_offtrack = [0,0,0,0,0,0,0,0,0]
+        global line_Sensor_sharpleft = [1,1,0,0,0,0,0,0,0]
+        global line_Sensor_sharpright = [0,0,0,0,0,0,0,1,1]
+
     def move(self, speed=None):
         if speed is None:
             speed = self.motor_speed_normal
@@ -132,7 +141,6 @@ class SAV:
                     self.stop()
                     self.handle_object("dropoff")
                     self.start_timeout()  # Start timeout after dropoff
-                    break  # End operation after drop-off
 
             if self.state == "START":
                 self.move()
