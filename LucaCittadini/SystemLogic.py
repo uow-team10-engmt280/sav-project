@@ -1,20 +1,24 @@
-''' 
-This program will recieve data from the GPIO pins that are connected to the
-Reflectance sensor, each pin is related to it's own sensor. When you get the
-data, arrange it into an array or list, then you can use case statements that
-then correspond to particular motor speeds
+''' # TODO should put this into a seperate README file or something along those lines, useful for report. 
+This programme is the center of the operation and ties the other programmes together.
+
+It is built off of a Finite State Machine framework, using classes as the states. 
+
+It will first import the Machine Vision programme's main function in to determine both 
+the turns the SAV needs to take, as well as the side of pickup and dropoff. 
+
+In the MOVING state we will be importing a list of booleans from the reflectance 
+sensor programme that represent the part of the track we are currently driving on, from 
+this list we then determine the corresponding/required motor speeds to keep the SAV on 
+the track. 
+
+This programme also implements the logic required to pickup and dropoff the 
+lego man as well as park, it will be accessing data from the range sensor.
+
+NOTE Could put the range sensor logic into a seperate programme, may need to see how 
+much this affects perform, but the code would be pretty simple (maybe motor driver too?)
 '''
 
-from time import time
-import numpy as np
-# from MachineVisionMain import MV FIXME
-from typing import Protocol
-
-
 # TODO should organise each file that needs running so that the entire file is a function that we can import 
-
-# States: IDLE, LISTENING, MOVING, PICKUP, DROPOFF, PARKING, COMPLETED
-# Order of state changes: 
 
 # IDLE --> LISTENING
 # LISTENING --> MOVING
@@ -29,17 +33,21 @@ from typing import Protocol
 
 '''
 NOTE 
-- Within the MOVING state we may want extra states for different moving phases, or just a counter 
-that changes the match case within the MOVING state
 - May want to create some functions that make the servos do specific tasks (will be reused in PICKUP and DROPOFF)
-- Might want to add a timer so that we know how long it took too complete the race
 
 '''
+# import RPi.GPIO as GPIO
+import numpy as np # NOTE Currently unused
+from time import time
+from typing import Protocol
+# from MachineVisionMain import MV FIXME
+
+
 class State(Protocol):
     def switch(self, sav) -> None:
         ...
 
-# Initialise some values + settings (motor driver mode etc.)
+# Initialise some values + settings (motor driver mode etc.) NOTE is there a cleaner way to initialise values?
 global movPhase
 global forkFlag
 global pickDropFlag
@@ -53,7 +61,6 @@ mergeFlag: bool = False
 motorDriverMode: bool = False
 
 class IDLE:
-    # Potentially start another programme that will be getting data from the reflectance sensor
     while(True):
         match input('Type "Start" to begin program when you\'re ready: \n').lower():
             case 's' | 'start':
@@ -68,18 +75,26 @@ class IDLE:
 class LISTENING:
     print('Entered new state successfully. \n')
     
-    # TParray: list[int] = MV() FIXME
+    # May want to wait until the Machine Vision programme is fully done
 
+    ''' 
+    FIXME
+    TParray: list[int] = MV() 
     # turnOne: int = TParray(0)
     # pickUpSideOne: int = TParray(1)
     # turnTwo: int = TParray(2)
     # pickUpSideTwo: int = TParray(3)
+    '''
+
+    # Start reflectance sensor programme
+
     while(True):
         match input('Decisions received, type "Next" to start race: \n').lower():
             case 'n' | 'Next':
                 break
             case _:
                 print('Invalid, try again. \n')
+
     global startTime
     startTime: float = time()
     def switch(self, sav) -> None:
@@ -88,7 +103,7 @@ class LISTENING:
 
 class MOVING:
     print('Entered new state successfully. \n')
-    def driving(): # NOTE
+    def driving():
 
         while(True): 
             match movPhase: # Could this be done through attributes?
@@ -98,17 +113,17 @@ class MOVING:
                     else:
                         ...
                 case 'phasePickDrop':
-                    if pickDropFlag == False:
+                    if pickDropFlag == False: # If false then we are picking up
                         ...
                     else:
                         ...
                     break
                 case 'phaseMerge':
-                    if mergeFlag == False:
+                    if mergeFlag == False: # If false then we are at the first merge
                         pickDropFlag = True
                     else:
                         ...
-                case 'phasePark':
+                case 'phasePark': # We get to this phase after the last merge as we are moving up to the parking spot
                     ...
                     break
         
@@ -131,8 +146,8 @@ class PICKUP:
     # Should stop the sav (send data to the motor driver)
     # Potentially change motor driver mode
     # Potentially fix position (to ensure it picks up in right place)
-    # Send data to large servo (some method, will need to go up and down)
-    # Send data to small servo (some method)
+    # Send data to large servo (some function, will need to go up and down)
+    # Send data to small servo (some function)
     # Once PICKUP is complete, should change state like done here:
     def switch(self, sav) -> None:
         sav.state = MOVING()
