@@ -1,6 +1,6 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V1.2.0
-# Changelog: modularised code; improved timing method; finalised output method
+# ENGMT280 QTRX-HD-09RC interfacing module V2.2.0
+# Changelog: fix name; modularised code; improved timing method; finalised output method
 import RPi.GPIO as GPIO
 import time
 
@@ -57,6 +57,32 @@ class lineSensor:
         # turn IR LEDs off
         GPIO.output(CTRL_PIN, GPIO.LOW)
 
+        return sensor_values
+    
+    def emitters_off(self, wait = True):
+        if self.ctrl_pin:
+            GPIO.output(self.ctrl_pin, GPIO.LOW)
+        if wait:
+            time.sleep(0.0012)
+
+    def emitters_on(self, wait = True):
+        if self.ctrl_pin:
+            GPIO.output(self.ctrl_pin, GPIO.HIGH)
+        if wait:
+            time.sleep(0.0012)
+
+    def calibrate(self):
+        sensor_values = self.read()
+        for i in range(self.sensor_count):
+            self.calibration_on['maximum'][i] = max(self.calibration_on['maximum'][i], sensor_values[i])
+            self.calibration_on['minimum'][i] = min(self.calibration_on['minimum'][i], sensor_values[i])
+
+    def readCalibrated(self):
+        sensor_values = self.read()
+        for i in range(self.sensor_count):
+            cal_min = self.calibration_on['minimum'][i]
+            cal_max = self.calibration_on['maximum'][i]
+            sensor_values[i] = (sensor_values[i] - cal_min) * 1000 // (cal_max - cal_min) if cal_max > cal_min else 0
         return sensor_values
     
     def cleanup(self):
