@@ -1,5 +1,5 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V2.3.2
+# ENGMT280 QTRX-HD-09RC interfacing module V2.3.3
 # Changelog: fix some bugs in calibration method
 # Still to fix: fix calibration methods, fix threshold ranging
 import RPi.GPIO as GPIO
@@ -11,14 +11,17 @@ class lineSensor:
         self.ctrl_pin = ctrl_pin # control pin
         self.sensor_pins = sensor_pins # array of gpio pins connected to sensor
         self._sensor_count = len(sensor_pins) # amount of sensors
-        # this is the maximum possible discharge time of the RC circuit
-        self.max_value = max_value
+        self.max_value = max_value # this is the maximum possible discharge time of the RC circuit
+        
         self._calibration_on = {'maximum': [], 'minimum': [], 'initialized': False}
         self._calibration_off = {'maximum': [], 'minimum': [], 'initialized': False}
 
+        # create threshold to seperate light and dark values
         if threshold is None:
+            # create value if not provided
             self.threshold = max_value / 2
         else:
+            # use user input value
             self.threshold = threshold
         
         # set pin naming convention
@@ -67,7 +70,8 @@ class lineSensor:
             # measure the discharge time
             while True:
                 # convert to microseconds
-                elapsed_time = (time.time() - start_time) * 1000000
+                # elapsed_time = (time.time() - start_time) * 1000000
+                elapsed_time = time.time() - start_time
 
                 if elapsed_time > self.max_value:
                     break  # Stop if time exceeds the maximum threshold
@@ -79,7 +83,7 @@ class lineSensor:
             # turn IR LEDs off
             self.emitters_off()
             
-            binary_array = [(0 if time > self.threshold else 1) for time in sensor_values]
+            binary_array = [(0 if time_val > self.threshold else 1) for time_val in sensor_values]
 
             return binary_array # outputs discharge time in microsecs
 
@@ -104,10 +108,10 @@ class lineSensor:
 # this runs if file is run as a program instead of used as a module/library
 if __name__ == "__main__":
     # QTRX-HD-09RC values used for R, C and tau
-    RESISTANCE = 220
+    RESISTANCE = 500
     CAPACITANCE = 2.2E-9
     TIME_CONSTANT = RESISTANCE * CAPACITANCE
-    max_discharge = 6 * TIME_CONSTANT
+    max_discharge = 5 * TIME_CONSTANT
 
     # define control pin
     CTRL_PIN = 18
