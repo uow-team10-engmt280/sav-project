@@ -1,9 +1,10 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V2.3.1
-# Changelog: add binary output; fix some bugs in calibration method
-# Still to fix: fix calibration methods
+# ENGMT280 QTRX-HD-09RC interfacing module V2.3.2
+# Changelog: fix some bugs in calibration method
+# Still to fix: fix calibration methods, fix threshold ranging
 import RPi.GPIO as GPIO
 import time
+from itertools import cycle
 
 class lineSensor:
     def __init__(self, ctrl_pin, sensor_pins, max_value, threshold = None):
@@ -116,6 +117,9 @@ if __name__ == "__main__":
     while True:
         try:
             sensor_values = sensors.read()
-            print(sensor_values)
+            cycle_values = cycle(sensor_values)
+            
+            while True:
+                print(next(cycle_values))
         finally:
             sensors.cleanup()
