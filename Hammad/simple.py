@@ -3,7 +3,7 @@ import time
 
 class SAV:
     def __init__(self):
-        # GPIO setup based on your provided mappings
+        # GPIO setup 
         self.distance_sensor_gpio = 2  # Output of range sensor
         self.arm_servo_gpio = 0        # Servo Control
         self.grip_servo_gpio = 5       # Mini Servo Control
