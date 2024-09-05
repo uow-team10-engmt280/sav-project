@@ -1,96 +1,141 @@
+from time import time, sleep
 import RPi.GPIO as GPIO
-import time
-import gpio_timing  # Import the gpio_timing module
 
-class SAVStateMachine:
-    def __init__(self, move_pin, sensor_pin, side_sensor_pin):
-        self.move_pin = move_pin
-        self.sensor_pin = sensor_pin
-        self.side_sensor_pin = side_sensor_pin
-        self.state = 'STOP'
-        
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.move_pin, GPIO.OUT)
-        GPIO.setup(self.sensor_pin, GPIO.IN)
-        GPIO.setup(self.side_sensor_pin, GPIO.IN)
-        
-    def move(self):
-        print("Moving forward...")
-        GPIO.output(self.move_pin, GPIO.HIGH)
-        while GPIO.input(self.sensor_pin) == GPIO.HIGH:
-            time.sleep(0.1)
-        self.state = 'STOP'
-        self.stop()
-    
-    def stop(self):
-        print("Stopping...")
-        GPIO.output(self.move_pin, GPIO.LOW)
-        self.state = 'PICKUP'
-        self.pickup_object()
-        
-    def pickup_object(self):
-        print("Checking for object...")
-        if GPIO.input(self.side_sensor_pin) == GPIO.HIGH:
-            print("Object detected! Picking up object...")
-            # Insert object pickup logic here
-            time.sleep(2)
-            self.state = 'TURN'
-            self.turn()
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)  # Or GPIO.BOARD, depending on your pin numbering preference
+# GPIO.setup(sensor_pins, GPIO.IN)  # Setup sensor pins here
+# GPIO.setup(motor_pins, GPIO.OUT)  # Setup motor control pins here
+
+# Define global variables and flags
+movPhase = 'phaseFork'
+forkFlag = False
+pickDropFlag = False
+mergeFlag = False
+motorDriverMode = False
+startTime = 0
+
+# Define the SAV class which holds the state management methods
+class SAV:
+    def __init__(self):
+        self.state = 'IDLE'
+
+    def idle(self):
+        print("Entering IDLE state")
+        while True:
+            command = input('Type "Start" to begin the program when you\'re ready: \n').lower()
+            if command in ['s', 'start']:
+                self.state = 'LISTENING'
+                break
+            else:
+                print('Invalid, try again. \n')
+
+    def listening(self):
+        print('Entered LISTENING state successfully. \n')
+        global startTime
+        startTime = time()
+
+        # Placeholder: Replace with actual function to get sensor data
+        TParray = self.get_sensor_data()
+
+        self.turnOne = TParray[0]
+        self.pickUpSideOne = TParray[1]
+        self.turnTwo = TParray[2]
+        self.pickUpSideTwo = TParray[3]
+
+        while True:
+            command = input('Decisions received, type "Next" to start race: \n').lower()
+            if command in ['n', 'next']:
+                self.state = 'MOVING'
+                break
+            else:
+                print('Invalid, try again. \n')
+
+    def get_sensor_data(self):
+        # Replace this function with actual sensor data collection logic
+        return [0, 1, 0, 1]  # Example data
+
+    def moving(self):
+        global forkFlag, pickDropFlag, mergeFlag
+
+        print('Entered MOVING state successfully. \n')
+
+        while True:
+            if movPhase == 'phaseFork':
+                if not forkFlag:
+                    pass  # Implement movement logic
+                else:
+                    pass  # Implement logic for after the fork
+            elif movPhase == 'phasePickDrop':
+                if not pickDropFlag:
+                    pass  # Implement pick/drop movement logic
+                else:
+                    pass  # Implement logic for after pick/drop
+                break
+            elif movPhase == 'phaseMerge':
+                if not mergeFlag:
+                    pickDropFlag = True
+                else:
+                    pass  # Implement merging logic
+                break
+            elif movPhase == 'phasePark':
+                break  # Implement parking logic
+
+        if not pickDropFlag:
+            self.state = 'PICKUP'
         else:
-            print("No object detected. Moving forward...")
-            self.state = 'MOVE'
-            self.move()
-    
-    def turn(self):
-        print("Turning...")
-        # Example: Measuring time for GPIO to go LOW using the gpio_timing module
-        duration = gpio_timing.measure_gpio_low_duration(self.move_pin)
-        print(f"Turn duration: {duration:.10f} seconds")
-        # Insert turn logic here
-        time.sleep(1)
-        self.state = 'PARK'
-        self.park()
-    
-    def park(self):
-        print("Parking...")
-        # Insert park logic here
-        time.sleep(2)
-        self.state = 'STOP'
-        self.reset()
-    
-    def reset(self):
-        print("Resetting...")
-        GPIO.cleanup()
-        self.state = 'STOP'
-        print("Reset complete. System is stopped.")
-    
+            self.state = 'DROPOFF'
+
+    def pickup(self):
+        print('Entered PICKUP state successfully. \n')
+        # Implement the pickup logic
+        self.state = 'MOVING'
+
+    def dropoff(self):
+        print('Entered DROPOFF state successfully. \n')
+        # Implement the dropoff logic
+        self.state = 'MOVING'
+
+    def parking(self):
+        print('Entered PARKING state successfully. \n')
+        # Implement parking logic
+        self.state = 'COMPLETE'
+
+    def complete(self):
+        print('Entered COMPLETE state successfully.')
+        endTime = time()
+        raceTime = endTime - startTime
+        minutes = raceTime // 60
+        seconds = raceTime % 60
+        print(f'You took {int(minutes)} minutes and {seconds:.2f} seconds to complete the track.')
+        # Implement any finalization logic like playing a sound or stopping all motors
+        # End the program or restart
+
     def run(self):
         while True:
-            if self.state == 'MOVE':
-                self.move()
-            elif self.state == 'STOP':
-                self.stop()
+            if self.state == 'IDLE':
+                self.idle()
+            elif self.state == 'LISTENING':
+                self.listening()
+            elif self.state == 'MOVING':
+                self.moving()
             elif self.state == 'PICKUP':
-                self.pickup_object()
-            elif self.state == 'TURN':
-                self.turn()
-            elif self.state == 'PARK':
-                self.park()
-            elif self.state == 'RESET':
-                self.reset()
-            else:
-                print("Unknown state! Resetting...")
-                self.reset()
+                self.pickup()
+            elif self.state == 'DROPOFF':
+                self.dropoff()
+            elif self.state == 'PARKING':
+                self.parking()
+            elif self.state == 'COMPLETE':
+                self.complete()
                 break
 
-# Setup
-move_pin = 12          # GPIO pin to control movement
-sensor_pin = 18        # GPIO pin for line following sensor
-side_sensor_pin = 23   # GPIO pin for object detection sensor
+# Main execution
+def main() -> None:
+    sav = SAV()
+    sav.run()
 
-# Initialize the state machine
-sav = SAVStateMachine(move_pin, sensor_pin, side_sensor_pin)
-
-# Start the state machine
-sav.state = 'MOVE'
-sav.run()
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        print("Program interrupted and GPIO cleaned up.")
