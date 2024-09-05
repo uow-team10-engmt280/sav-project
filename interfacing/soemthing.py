@@ -3,9 +3,9 @@ import time
 import numpy as np  # Import NumPy for array handling
 
 class ReflectanceSensorArray:
-    def __init__(self, sensor_pins, control_pins):
+    def __init__(self, sensor_pins, even_control_pin):
         self.sensor_pins = sensor_pins
-        self.control_pins = control_pins
+        self.even_control_pin = even_control_pin
 
         # Setup GPIO mode
         GPIO.setmode(GPIO.BCM)
@@ -14,22 +14,19 @@ class ReflectanceSensorArray:
         for pin in self.sensor_pins:
             GPIO.setup(pin, GPIO.IN)
 
-        # Set up the control pins as outputs
-        for pin in self.control_pins.values():
-            GPIO.setup(pin, GPIO.OUT)
+        # Set up the EVEN control pin as an output
+        GPIO.setup(self.even_control_pin, GPIO.OUT)
 
     def read_sensors(self):
         """Reads the current state of the sensors and returns as a NumPy array."""
         return np.array([GPIO.input(pin) for pin in self.sensor_pins])
 
     def perform_gpio_operation(self):
-        """Performs a GPIO operation based on sensor readings."""
-        even_control_pin = self.control_pins["EVEN_control"]
-        GPIO.setup(even_control_pin, GPIO.OUT)
-        GPIO.output(even_control_pin, GPIO.HIGH)
+        """Performs a GPIO operation using the EVEN control pin."""
+        GPIO.output(self.even_control_pin, GPIO.HIGH)
         time.sleep(0.00001)  # Wait for 10 microseconds
-        GPIO.output(even_control_pin, GPIO.LOW)
-        GPIO.setup(even_control_pin, GPIO.IN)
+        GPIO.output(self.even_control_pin, GPIO.LOW)
+        GPIO.setup(self.even_control_pin, GPIO.IN)
 
         # Measure the time for a sensor to change state (example: Sensor 6)
         start_time = time.time()
@@ -44,11 +41,11 @@ class ReflectanceSensorArray:
         GPIO.cleanup()
 
 def main():
-    # GPIO Pin setup for sensors and control pins
+    # GPIO Pin setup for sensors and the control pin
     sensor_pins = [23, 20, 24, 16, 25, 12, 8, 7, 1]  # Sensor 1 through Sensor 9
-    control_pins = {"ODD_control": 18, "EVEN_control": 21}
+    even_control_pin = 21  # Using GPIO 21 for EVEN control
 
-    sensor_array = ReflectanceSensorArray(sensor_pins, control_pins)
+    sensor_array = ReflectanceSensorArray(sensor_pins, even_control_pin)
 
     try:
         while True:
