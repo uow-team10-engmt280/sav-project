@@ -7,7 +7,7 @@ then correspond to particular motor speeds
 
 from time import time
 import numpy as np
-from MachineVisionMain import MV
+# from MachineVisionMain import MV
 from typing import Protocol
 
 
