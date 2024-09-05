@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from machine_vision import panel_directions  # Import the 2-bit array from machine_vision.py
+from line_sensor import binary_array
 
 class SAV:
     def __init__(self):
