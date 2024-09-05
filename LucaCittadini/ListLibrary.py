@@ -3,7 +3,7 @@ from SystemLogic import movPhase, forkFlag, pickDropFlag, mergeFlag
 global placeHolder
 global rSensor
 def FindCase() -> list[int]:
-        match rSensor: 
+        match rSensor: # MAY NEED TO CHANGE THIS
     # Base movement, forward and stop
             case [0, 0, 0, 1, 1, 1, 0, 0, 0]:
                 return [1, 50, 1, 50]
@@ -59,48 +59,24 @@ def FindCase() -> list[int]:
                                     return [1, 50, 1, 50]
                         else:
                             match rSensor:
-                                case [0, 0, 0, 1, 1, 1, 1, 0, 0]: # COMING UP TO FORK BUT STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
+                                case [0, 0, 0, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0] | [1, 1, 1, 0, 1, 1, 1, 0, 0] | [1, 1, 0, 0, 1, 1, 1, 0, 0] | [1, 0, 0, 0, 1, 1, 1, 0, 0]: 
                                     return [1, 50, 1, 45]
-                                case [0, 0, 0, 0, 1, 1, 1, 1, 0]: # COMING UP TO FORK BUT STRAYING LEFT          - Right motor should decrease (-10%)
+                                case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [0, 1, 1, 1, 1, 1, 0, 0, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
                                     return [1, 50, 1, 40]
-                                case [0, 0, 0, 0, 0, 1, 1, 1, 1]: # COMING UP TO FORK BUT STRAYING LEFT CONSIDERABLY  - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+                                case [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
                                     return [1, 50, 1, 30]
-                                case [0, 0, 1, 1, 1, 1, 0, 0, 0]: # COMING UP TO FORK BUT STRAYING SLIGHTLY RIGHT 
-                                    return [1, 50, 1, 50]
-                                case [0, 1, 1, 1, 1, 0, 0, 0, 0]: # COMING UP TO FORK BUT STRAYING RIGHT              - Left motor should decrease slightly (-5%)
+                                case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 0, 1, 1, 1, 0, 0, 0, 0]: 
                                     return [1, 45, 1, 50]
-                                case [1, 1, 1, 1, 0, 0, 0, 0, 0]: # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease (-10%)
+                                case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0]: 
                                     return [1, 40, 1, 50]
-                                case [0, 0, 1, 1, 1, 1, 1, 0, 0]: # DIRECTLY ON THE FORK - Right motor should decrease slightly (-5%)
-                                    return [1, 50, 1, 45] # TODO
-                                case [0, 0, 0, 1, 1, 1, 1, 1, 0]: # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY LEFT  - Left motor should decrease (-10%)
-                                    return [1, 40, 1, 50]
-                                case [0, 0, 0, 0, 1, 1, 1, 1, 1]: # DIRECTLY ON THE FORK BUT STRAYING LEFT           - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+                                case [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
                                     return [1, 30, 1, 45]
-                                case [0, 1, 1, 1, 1, 1, 0, 0, 0]: # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY RIGHT - Right motor should decrease (-10%)
-                                    return [1, 50, 1, 40]
-                                case [1, 1, 1, 1, 1, 0, 0, 0, 0]: # DIRECTLY ON THE FORK BUT STRAYING RIGHT          - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+                                case [1, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1]: 
                                     return [1, 45, 1, 30]
-                                case [0, 1, 1, 1, 0, 1, 1, 1, 0]: # CENTERED ON FORK BUT SLIGHTLY PAST  - Right motor should decrease (-10%)
-                                    return [1, 50, 1, 40]
-                                case [1, 1, 1, 0, 0, 0, 1, 1, 1]: # CENTERED ON FORK BUT PAST           - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
-                                    return [1, 45, 1, 30]
-                                case [1, 1, 0, 0, 0, 0, 0, 1, 1]: # CENTERED ON FORK BUT PAST CONSIDERABLY - Right motor should decrease majorly (-30%), Left motor should decrease (-10%)
+                                case [1, 1, 0, 0, 0, 0, 0, 1, 1]: 
                                     return [1, 40, 1, 20]
-                                case [1, 0, 0, 0, 0, 0, 0, 0, 1]: # CENTERED ON FORK BUT VERY FAR PAST     - Right motor should decrease massively (-40%), Left motor should decrease more (-15%)
+                                case [1, 0, 0, 0, 0, 0, 0, 0, 1]: 
                                     return [1, 35, 1, 10]
-                                case [1, 1, 1, 0, 1, 1, 1, 0, 0]: # FOLLOWING FORK RIGHT 1, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
-                                    return [1, 50, 1, 45] # TODO
-                                case [1, 1, 0, 1, 1, 1, 0, 0, 0]: # FOLLOWING FORK RIGHT 1, ON POINT 
-                                    return [1, 50, 1, 50]
-                                case [1, 0, 1, 1, 1, 0, 0, 0, 0]: # FOLLOWING FORK RIGHT 1, STRAYING SLIGHTLY TOO FAR RIGHT - Left motor should decrease slightly (-5%)
-                                    return [1, 45, 1, 50]
-                                case [1, 1, 0, 0, 1, 1, 1, 0, 0]: # FOLLOWING FORK RIGHT 2, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
-                                    return [1, 50, 1, 45] # TODO
-                                case [1, 0, 0, 1, 1, 1, 0, 0, 0]: # FOLLOWING FORK RIGHT 2, ON POINT 
-                                    return [1, 50, 1, 50]
-                                case [1, 0, 0, 0, 1, 1, 1, 0, 0]: # FOLLOWING FORK RIGHT 3, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
-                                    return [1, 50, 1, 45] # TODO
                                 case _:
                                     return [1, 50, 1, 50]
                     case 'phasePickDrop':
@@ -109,8 +85,25 @@ def FindCase() -> list[int]:
                         else:
                             ...
                     case 'phaseMerge':
+                        match rSensor:
+                            case [0, 0, 1, 1, 1, 1, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0]:
+                                return [1, 50, 1, 50]
+                            case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                                return [1, 40, 1, 50]
+                            case [1, 1, 1, 1, 0, 0, 0, 0, 0]: 
+                                return [1, 30, 1, 45]
+                            case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
+                                return [1, 50, 1, 40]
+                            case [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
+                                return [1, 45, 1, 20]
+                            case [0, 0, 0, 1, 1, 1, 1, 1, 0]: 
+                                return [1, 45, 1, 50]
+                            case [0, 1, 1, 1, 1, 1, 0, 0, 0]: 
+                                return [1, 50, 1, 45]
+
+
                         if mergeFlag == False:
-                            pickDropFlag = True
+                            pickDropFlag = True # This is because when we get to the first merge we will have completed the pick-up process, so we set pickDropFlag to True because that means next time we are in the phasePickDrop we will be dropping off
                         else:
                             ...
                     case 'phasePark': # We get to this phase after the last merge as we are moving up to the parking spot
@@ -156,7 +149,6 @@ def FindCase() -> list[int]:
 
 [1, 1, 1, 1, 0, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
 
-
 [0, 0, 0, 1, 1, 1, 1, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY LEFT 
 
 [0, 0, 0, 0, 1, 1, 1, 1, 0] # COMING UP TO FORK BUT STRAYING LEFT               - Right motor should decrease slightly (-5%)
@@ -164,7 +156,6 @@ def FindCase() -> list[int]:
 [0, 0, 0, 0, 0, 1, 1, 1, 1] # COMING UP TO FORK BUT STRAYING LEFT CONSIDERABLY  - Right motor should decrease (-10%)
 
 # TODO version 2 (turning right)
-
 [0, 0, 0, 1, 1, 1, 1, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
 
 [0, 0, 0, 0, 1, 1, 1, 1, 0] # COMING UP TO FORK BUT STRAYING LEFT          - Right motor should decrease (-10%)
@@ -260,6 +251,8 @@ def FindCase() -> list[int]:
 
 [0, 0, 1, 1, 1, 0, 0, 0, 1] # FOLLOWING FORK LEFT 3, STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
 
+
+
 # COMING UP TO THE MERGE - FROM LEFT
 # TODO version 1 (coming from left)
 [0, 0, 1, 1, 1, 0, 1, 1, 1] # MERGING FROM LEFT 1, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
@@ -273,6 +266,8 @@ def FindCase() -> list[int]:
 [0, 0, 0, 1, 1, 1, 0, 0, 1] # MERGING FROM 2, ON POINT
 
 [0, 0, 1, 1, 1, 0, 0, 0, 1] # MERGING FROM LEFT 3, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
+
+
 
 # FOLLOWING THE FORK - TURNING RIGHT
 # TODO version 2 (turning right)
@@ -288,6 +283,8 @@ def FindCase() -> list[int]:
 
 [1, 0, 0, 0, 1, 1, 1, 0, 0] # FOLLOWING FORK RIGHT 3, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
 
+
+
 # COMING UP TO THE MERGE - FROM RIGHT
 # TODO version 2 (coming from right)
 [1, 1, 1, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 1, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
@@ -301,6 +298,8 @@ def FindCase() -> list[int]:
 [1, 0, 0, 1, 1, 1, 0, 0, 0] # MERGING FROM RIGHT 2, ON POINT 
 
 [1, 0, 0, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 3, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
+
+
 
 # TODO PARKING MARKINGS
 
