@@ -62,16 +62,38 @@ class SAV:
         GPIO.output(self.motor_b_speed_gpio, speed)
 
     def turn_left(self):
-        print("Turning left at reduced speed")
+        print("Turning left")
         GPIO.output(self.motor_a_direction_gpio, GPIO.LOW)  # Change direction
         GPIO.output(self.motor_b_direction_gpio, GPIO.HIGH)
         self.move(self.motor_speed_turn)
+        time.sleep(1)  # Adjust the duration for turning as necessary
 
-    def turn_right(self):
-        print("Turning right at reduced speed")
+        print("Straightening out after left turn")
+        self.move()  # Move forward a bit after turning left
+        time.sleep(1)  # Adjust the duration for moving forward as necessary
+
+        print("Turning right to straighten out")
         GPIO.output(self.motor_a_direction_gpio, GPIO.HIGH)
         GPIO.output(self.motor_b_direction_gpio, GPIO.LOW)  # Change direction
         self.move(self.motor_speed_turn)
+        time.sleep(1)  # Adjust the duration for turning as necessary
+
+    def turn_right(self):
+        print("Turning right")
+        GPIO.output(self.motor_a_direction_gpio, GPIO.HIGH)
+        GPIO.output(self.motor_b_direction_gpio, GPIO.LOW)  # Change direction
+        self.move(self.motor_speed_turn)
+        time.sleep(1)  # Adjust the duration for turning as necessary
+
+        print("Straightening out after right turn")
+        self.move()  # Move forward a bit after turning right
+        time.sleep(1)  # Adjust the duration for moving forward as necessary
+
+        print("Turning left to straighten out")
+        GPIO.output(self.motor_a_direction_gpio, GPIO.LOW)  # Change direction
+        GPIO.output(self.motor_b_direction_gpio, GPIO.HIGH)
+        self.move(self.motor_speed_turn)
+        time.sleep(1)  # Adjust the duration for turning as necessary
 
     def stop(self):
         print("Stopping SAV")
@@ -162,13 +184,11 @@ class SAV:
 
             elif self.state == "TURN_LEFT":
                 self.turn_left()
-                if self.line_sensor_timeout():
-                    self.state = "MOVING_AGAIN"
+                self.state = "MOVING_AGAIN"
 
             elif self.state == "TURN_RIGHT":
                 self.turn_right()
-                if self.line_sensor_timeout():
-                    self.state = "MOVING_AGAIN"
+                self.state = "MOVING_AGAIN"
 
             elif self.state == "OBJECT_DETECTED":
                 self.stop()
