@@ -1,141 +1,97 @@
-from time import time, sleep
-import RPi.GPIO as GPIO
+import time
 
-# Setup GPIO
-GPIO.setmode(GPIO.BCM)  # Or GPIO.BOARD, depending on your pin numbering preference
-# GPIO.setup(sensor_pins, GPIO.IN)  # Setup sensor pins here
-# GPIO.setup(motor_pins, GPIO.OUT)  # Setup motor control pins here
-
-# Define global variables and flags
-movPhase = 'phaseFork'
-forkFlag = False
-pickDropFlag = False
-mergeFlag = False
-motorDriverMode = False
-startTime = 0
-
-# Define the SAV class which holds the state management methods
 class SAV:
     def __init__(self):
-        self.state = 'IDLE'
+        self.state = "START"
+        self.line_sensor_data = 0b000000000  # 9-bit binary number
+        self.distance_sensor_gpio = False
+        self.parking_binary = 0b100000001  # Example parking binary pattern
+        self.timeout_duration = 5  # Timeout duration in seconds
+        self.motor_speed_normal = 100  # Normal movement speed
+        self.motor_speed_turn = 50  # Turning speed
+        self.timeout_start = None
 
-    def idle(self):
-        print("Entering IDLE state")
-        while True:
-            command = input('Type "Start" to begin the program when you\'re ready: \n').lower()
-            if command in ['s', 'start']:
-                self.state = 'LISTENING'
-                break
-            else:
-                print('Invalid, try again. \n')
+    def read_line_sensor(self):
+        # Simulate reading line sensor
+        pass
 
-    def listening(self):
-        print('Entered LISTENING state successfully. \n')
-        global startTime
-        startTime = time()
+    def check_distance_sensor(self):
+        # If sensor is high transition to stop and then pickup left or right based on camera
+        pass
 
-        # Placeholder: Replace with actual function to get sensor data
-        TParray = self.get_sensor_data()
+    def move(self):
+        # Simulate moving forward
+        # If line sensor needs to turn, stop 
+        print("Moving forward at normal speed")
 
-        self.turnOne = TParray[0]
-        self.pickUpSideOne = TParray[1]
-        self.turnTwo = TParray[2]
-        self.pickUpSideTwo = TParray[3]
+    def turn(self):
+        # Adjust the position, move, straighten out and then go back into default move state
+        print("Turning at reduced speed")
 
-        while True:
-            command = input('Decisions received, type "Next" to start race: \n').lower()
-            if command in ['n', 'next']:
-                self.state = 'MOVING'
-                break
-            else:
-                print('Invalid, try again. \n')
+    def stop(self):
+        # If stopped and distance sensor is high, transition to pickup_obkect
+        # IF line sensor says to turn go into turning state
+        print("Stopping")
 
-    def get_sensor_data(self):
-        # Replace this function with actual sensor data collection logic
-        return [0, 1, 0, 1]  # Example data
+    def pickup_object(self):
+        # Based on camera input information, rotate arm left or right
+        # Close the grip
+        # Rotate arm into original position
+        # Resume Move state
+        print("Picking up object")
 
-    def moving(self):
-        global forkFlag, pickDropFlag, mergeFlag
+    def dropoff_object(self):
+        # Based on camera input information, rotate arm left or right
+        # Open the grip
+        # Rotate arm into original position
+        # Resume Move state
+        print("Dropping off object")
 
-        print('Entered MOVING state successfully. \n')
-
-        while True:
-            if movPhase == 'phaseFork':
-                if not forkFlag:
-                    pass  # Implement movement logic
-                else:
-                    pass  # Implement logic for after the fork
-            elif movPhase == 'phasePickDrop':
-                if not pickDropFlag:
-                    pass  # Implement pick/drop movement logic
-                else:
-                    pass  # Implement logic for after pick/drop
-                break
-            elif movPhase == 'phaseMerge':
-                if not mergeFlag:
-                    pickDropFlag = True
-                else:
-                    pass  # Implement merging logic
-                break
-            elif movPhase == 'phasePark':
-                break  # Implement parking logic
-
-        if not pickDropFlag:
-            self.state = 'PICKUP'
-        else:
-            self.state = 'DROPOFF'
-
-    def pickup(self):
-        print('Entered PICKUP state successfully. \n')
-        # Implement the pickup logic
-        self.state = 'MOVING'
-
-    def dropoff(self):
-        print('Entered DROPOFF state successfully. \n')
-        # Implement the dropoff logic
-        self.state = 'MOVING'
-
-    def parking(self):
-        print('Entered PARKING state successfully. \n')
-        # Implement parking logic
-        self.state = 'COMPLETE'
-
-    def complete(self):
-        print('Entered COMPLETE state successfully.')
-        endTime = time()
-        raceTime = endTime - startTime
-        minutes = raceTime // 60
-        seconds = raceTime % 60
-        print(f'You took {int(minutes)} minutes and {seconds:.2f} seconds to complete the track.')
-        # Implement any finalization logic like playing a sound or stopping all motors
-        # End the program or restart
+    def line_sensor_timeout(self):
+        # Handle line sensor timeout
+        if self.timeout_start is None:
+            self.timeout_start = time.time()
+        if time.time() - self.timeout_start > self.timeout_duration:
+            self.timeout_start = None  # Reset timeout
+            return True
+        return False
 
     def run(self):
         while True:
-            if self.state == 'IDLE':
-                self.idle()
-            elif self.state == 'LISTENING':
-                self.listening()
-            elif self.state == 'MOVING':
-                self.moving()
-            elif self.state == 'PICKUP':
-                self.pickup()
-            elif self.state == 'DROPOFF':
-                self.dropoff()
-            elif self.state == 'PARKING':
-                self.parking()
-            elif self.state == 'COMPLETE':
-                self.complete()
-                break
+            self.read_line_sensor()
+            self.check_distance_sensor()
 
-# Main execution
-def main() -> None:
-    sav = SAV()
-    sav.run()
+            match self.state:
+                case "START":
+                    self.move()
+                    if self.distance_sensor_gpio:
+                        self.state = "OBJECT_DETECTED"
+                    elif self.line_sensor_data == self.parking_binary:
+                        self.state = "PARKED"
+
+                case "OBJECT_DETECTED":
+                    self.stop()
+                    self.pickup_object()
+                    self.state = "TIMEOUT"
+
+                case "TIMEOUT":
+                    if self.line_sensor_timeout():
+                        self.state = "MOVING_AGAIN"
+
+                case "MOVING_AGAIN":
+                    self.move()
+                    if self.line_sensor_data == self.parking_binary:
+                        self.state = "PARKED"
+                    elif self.distance_sensor_gpio:
+                        self.state = "OBJECT_DETECTED"
+
+                case "PARKED":
+                    self.stop()
+                    print("SAV is parked.")
+                    break  # Exit the loop once parked
+
+            time.sleep(0.1)  # Small delay to prevent excessive CPU usage
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        GPIO.cleanup()
-        print("Program interrupted and GPIO cleaned up.")
+    sav = SAV()
+    sav.run()
