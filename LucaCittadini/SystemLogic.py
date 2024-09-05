@@ -68,12 +68,12 @@ class IDLE:
 class LISTENING:
     print('Entered new state successfully. \n')
     
-    TParray: list[int] = MV() # FIXME might want to give a different name
+    # TParray: list[int] = MV() # FIXME might want to give a different name
 
-    turnOne: int = TParray(0)
-    pickUpSideOne: int = TParray(1)
-    turnTwo: int = TParray(2)
-    pickUpSideTwo: int = TParray(3)
+    # turnOne: int = TParray(0)
+    # pickUpSideOne: int = TParray(1)
+    # turnTwo: int = TParray(2)
+    # pickUpSideTwo: int = TParray(3)
     while(True):
         match input('Decisions received, type "Next" to start race: \n').lower():
             case 'n' | 'Next':
