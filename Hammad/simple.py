@@ -90,9 +90,11 @@ class SAV:
                 if self.distance_sensor_triggered == 1:
                     self.stop()
                     self.handle_object("pickup")
+                    self.state = "MOVING_AGAIN"  # Continue moving after picking up
                 elif self.distance_sensor_triggered == 2:
                     self.stop()
                     self.handle_object("dropoff")
+                    self.state = "MOVING_AGAIN"  # Continue moving after dropping off
                     break  # End operation after drop-off
 
             if self.state == "START":
@@ -108,11 +110,6 @@ class SAV:
 
             elif self.state == "MOVING_AGAIN":
                 self.move()
-                if GPIO.input(self.distance_sensor_gpio):
-                    if self.distance_sensor_triggered < 2:
-                        self.state = "OBJECT_DETECTED"
-                    else:
-                        self.state = "DROPPING_OFF"
 
             time.sleep(0.1)  # Small delay to prevent excessive CPU usage
 
