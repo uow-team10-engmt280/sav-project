@@ -79,11 +79,11 @@ class LISTENING:
 
     ''' 
     FIXME
-    TParray: list[int] = MV() 
-    # turnOne: int = TParray(0)
-    # pickUpSideOne: int = TParray(1)
-    # turnTwo: int = TParray(2)
-    # pickUpSideTwo: int = TParray(3)
+    TParray: list[bool] = MV() 
+    turnOne: int = TParray(0)
+    pickUpSideOne: int = TParray(1)
+    turnTwo: int = TParray(2)
+    pickUpSideTwo: int = TParray(3)
     '''
 
     # Start reflectance sensor programme
