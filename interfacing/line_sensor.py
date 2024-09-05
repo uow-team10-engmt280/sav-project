@@ -44,43 +44,44 @@ class lineSensor:
             time.sleep(0.0012)
 
     def read(self):
-        sensor_values = [self.max_value] * self._sensor_count
-
-        # turn IR LEDs on
-        self.emittors_on()
-
-        # drive data pins high
-        for i in range(self._sensor_count):
-            GPIO.output(self.sensor_pins[i], GPIO.HIGH)
-
-        # wait for 10 microsecs
-        time.sleep(0.00001)  # 10 microseconds
-
-        # start timing
-        start_time = time.time()
-
-        # set data I/O lines to input
-        for i in range(self._sensor_count):
-            GPIO.setup(self.sensor_pins[i], GPIO.IN)
-
-        # measure the discharge time
         while True:
-            # convert to microseconds
-            elapsed_time = (time.time() - start_time) * 1000000
+            sensor_values = [self.max_value] * self._sensor_count
 
-            if elapsed_time > self.max_value:
-                break  # Stop if time exceeds the maximum threshold
+            # turn IR LEDs on
+            self.emittors_on()
 
+            # drive data pins high
             for i in range(self._sensor_count):
-                if GPIO.input(self.sensor_pins[i]) == GPIO.LOW and elapsed_time < sensor_values[i]:
-                    sensor_values[i] = elapsed_time
+                GPIO.output(self.sensor_pins[i], GPIO.HIGH)
 
-        # turn IR LEDs off
-        self.emitters_off()
-        
-        binary_array = [(0 if time > self.threshold else 1) for time in sensor_values]
+            # wait for 10 microsecs
+            time.sleep(0.00001)  # 10 microseconds
 
-        return binary_array # outputs discharge time in microsecs
+            # start timing
+            start_time = time.time()
+
+            # set data I/O lines to input
+            for i in range(self._sensor_count):
+                GPIO.setup(self.sensor_pins[i], GPIO.IN)
+
+            # measure the discharge time
+            while True:
+                # convert to microseconds
+                elapsed_time = (time.time() - start_time) * 1000000
+
+                if elapsed_time > self.max_value:
+                    break  # Stop if time exceeds the maximum threshold
+
+                for i in range(self._sensor_count):
+                    if GPIO.input(self.sensor_pins[i]) == GPIO.LOW and elapsed_time < sensor_values[i]:
+                        sensor_values[i] = elapsed_time
+
+            # turn IR LEDs off
+            self.emitters_off()
+            
+            binary_array = [(0 if time > self.threshold else 1) for time in sensor_values]
+
+            return binary_array # outputs discharge time in microsecs
 
     def calibrate(self):
         sensor_values = self.read()
@@ -100,8 +101,9 @@ class lineSensor:
     def cleanup(self):
         GPIO.cleanup()
 
-# this runs if python program is run instead of used as a module
+# this runs if file is run as a program instead of used as a module/library
 if __name__ == "__main__":
+    # QTRX-HD-09RC values used for R, C and tau
     RESISTANCE = 220
     CAPACITANCE = 2.2E-9
     TIME_CONSTANT = RESISTANCE * CAPACITANCE
