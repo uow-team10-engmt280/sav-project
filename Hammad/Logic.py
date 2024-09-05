@@ -30,14 +30,16 @@ class SAV:
 
     def move(self):
         # Simulate moving forward
+        # If line sensor needs to turn, stop 
         print("Moving forward at normal speed")
 
     def turn(self):
-        # Simulate turning
+        # Adjust the position, move, straighten out and then go back into default move state
         print("Turning at reduced speed")
 
     def stop(self):
-        # If stopped and line sensor is high, transition to pickup_obkect
+        # If stopped and distance sensor is high, transition to pickup_obkect
+        # IF line sensor says to turn go into turning state
         print("Stopping")
 
     def pickup_object(self):
