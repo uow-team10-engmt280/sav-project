@@ -1,6 +1,5 @@
-from SystemLogic import movPhase, forkFlag, pickDropFlag, mergeFlag
+from SystemLogic import movPhase, turnOne, pickDropFlag, mergeFlag, turnTwo, forkFlag
 
-global placeHolder
 global rSensor
 def FindCase() -> list[int]:
         match rSensor: # MAY NEED TO CHANGE THIS
@@ -36,9 +35,10 @@ def FindCase() -> list[int]:
             
             case _:
                 match movPhase: 
-                    case 'phaseFork':
-                        if forkFlag == False: 
-                            match rSensor:
+                    case 'phaseFork': # In the fork phase (either phase 1 or 4)
+                        # if forkFlag == False
+                        if turnOne == False: 
+                            match rSensor: # TURNING LEFT
                                 case [0, 0, 1, 1, 1, 1, 0, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 0, 1, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 0, 1]: 
                                     return [1, 45, 1, 50]
                                 case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
@@ -58,7 +58,7 @@ def FindCase() -> list[int]:
                                 case _:
                                     return [1, 50, 1, 50]
                         else:
-                            match rSensor:
+                            match rSensor: # TURNING RIGHT
                                 case [0, 0, 0, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0] | [1, 1, 1, 0, 1, 1, 1, 0, 0] | [1, 1, 0, 0, 1, 1, 1, 0, 0] | [1, 0, 0, 0, 1, 1, 1, 0, 0]: 
                                     return [1, 50, 1, 45]
                                 case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [0, 1, 1, 1, 1, 1, 0, 0, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 

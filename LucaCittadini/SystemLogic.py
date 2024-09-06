@@ -40,7 +40,7 @@ NOTE
 import numpy as np # NOTE Currently unused
 from time import time
 from typing import Protocol
-# from MachineVisionMain import MV FIXME
+from MachineVisionMain import MV 
 
 
 class State(Protocol):
@@ -53,6 +53,10 @@ global forkFlag
 global pickDropFlag
 global mergeFlag
 global motorDriverMode
+global turnOne
+global turnTwo
+global pickUpSideOne
+global pickUpSideTwo
 
 movPhase: str = 'phaseFork'
 forkFlag: bool = False
@@ -77,20 +81,20 @@ class LISTENING:
     
     # May want to wait until the Machine Vision programme is fully done
 
-    ''' 
-    FIXME
+    
+    
     TParray: list[bool] = MV() 
-    turnOne: int = TParray(0)
-    pickUpSideOne: int = TParray(1)
-    turnTwo: int = TParray(2)
-    pickUpSideTwo: int = TParray(3)
-    '''
+    turnOne: bool = TParray(0)
+    pickUpSideOne: bool = TParray(1)
+    turnTwo: bool = TParray(2)
+    pickUpSideTwo: bool = TParray(3)
+    
 
     # Start reflectance sensor programme
 
     while(True):
         match input('Decisions received, type "Next" to start race: \n').lower():
-            case 'n' | 'Next':
+            case 'n' | 'next':
                 break
             case _:
                 print('Invalid, try again. \n')
@@ -173,7 +177,7 @@ class COMPLETE:
     minutes: int = raceTime//60
     seconds: float = raceTime%60
     print('You took %d minutes and %f seconds to complete the track. ' % (minutes, seconds))
-    # Might want to do some fancy things like play music or sound to speakers 
+
     # End programme nicely (stop processes and other programmes, have a nice complete message at the end)
 
 class SAV:
