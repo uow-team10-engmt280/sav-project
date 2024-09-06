@@ -35,8 +35,6 @@ class SAV:
                 print("Offtrack right")
             elif ls.read() == line_Sensor_offtrack:
                 print("Offtrack")
-            elif ls.read() == line_Sensor_left:
-                print("Turn Left")
             elif ls.read() == line_Sensor_sharpleft:
                 print("Sharp Left")
             elif ls.read() == line_Sensor_sharpright:
