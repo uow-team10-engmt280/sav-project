@@ -108,28 +108,9 @@ class LISTENING:
 class MOVING:
     print('Entered new state successfully. \n')
     def driving():
-
         while(True): 
-            match movPhase: # Could this be done through attributes?
-                case 'phaseFork':
-                    if forkFlag == False: # If false then we are at the first fork
-                        ...
-                    else:
-                        ...
-                case 'phasePickDrop':
-                    if pickDropFlag == False: # If false then we are picking up
-                        ...
-                    else:
-                        ...
-                    break
-                case 'phaseMerge':
-                    if mergeFlag == False: # If false then we are at the first merge
-                        pickDropFlag = True
-                    else:
-                        ...
-                case 'phasePark': # We get to this phase after the last merge as we are moving up to the parking spot
-                    ...
-                    break
+            ...
+            
         
     
     # It needs to request data from the reflectance sensor (might activate/start reflectance sensor programme or just request the list/array)
