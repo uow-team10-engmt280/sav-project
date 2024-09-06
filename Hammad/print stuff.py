@@ -38,6 +38,17 @@ class SAV:
             
 
 if __name__ == "__main__":
+        # QTRX-HD-09RC values used for R, C and tau
+    RESISTANCE = 220
+    CAPACITANCE = 2.2E-9
+    TIME_CONSTANT = RESISTANCE * CAPACITANCE
+    max_discharge = 6 * TIME_CONSTANT
+
+    # define control pin
+    CTRL_PIN = 18
+    # Example GPIO pins for the sensors
+    sensor_pins = [23, 20, 24, 16, 25, 12, 8, 1, 7]
+    sensors = ls.lineSensor(CTRL_PIN, sensor_pins, max_discharge)
     try:
         sav = SAV()
         sav.run()
