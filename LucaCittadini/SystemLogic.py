@@ -47,6 +47,13 @@ class State(Protocol):
     def switch(self, sav) -> None:
         ...
 
+class SAV:
+    def __init__(self):
+        self.state = IDLE()
+
+    def switch(self) -> None:
+        self.state.switch(self)
+
 # Initialise some values + settings (motor driver mode etc.) NOTE is there a cleaner way to initialise values?
 global movPhase
 global forkFlag
@@ -161,12 +168,6 @@ class COMPLETE:
 
     # End programme nicely (stop processes and other programmes, have a nice complete message at the end)
 
-class SAV:
-    def __init__(self):
-        self.state = IDLE()
-
-    def switch(self) -> None:
-        self.state.switch(self)
 
 
 def main() -> None:

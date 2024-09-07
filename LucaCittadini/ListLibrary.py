@@ -139,12 +139,14 @@ def FindCase() -> list[int]:
                                 return [1, 45, 1, 50]
                             case [0, 1, 1, 1, 1, 1, 0, 0, 0]: 
                                 return [1, 50, 1, 45]
+                            case _:
+                                if pickDropFlag == False:
+                                    ...
+                                else:
+                                    ...
 
 
-                        if mergeFlag == False:
-                            pickDropFlag = True # This is because when we get to the first merge we will have completed the pick-up process, so we set pickDropFlag to True because that means next time we are in the phasePickDrop we will be dropping off
-                        else:
-                            ...
+                        
                     case 'phasePark': # We get to this phase after the last merge as we are moving up to the parking spot
                         ...
 

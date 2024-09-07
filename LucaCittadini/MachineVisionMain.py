@@ -15,7 +15,7 @@ def MV() -> list[int]:
 
         return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
 
-    def nothing(x):
+    def nothing():
         pass
 
     rimage = rescaleFrame(image)
