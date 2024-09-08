@@ -2,10 +2,11 @@
 # TODO don't forget what classes are, they consist of attributes and methods, not just lines of code to be executed like "print()"
 
 import RPi.GPIO as GPIO # type: ignore 
-from time import time
+import time
 from typing import Protocol
 from MachineVisionMain import MV 
 from FindCase import FindCase
+from ServoFunctions import setLargeServo, setSmallServo
 
 class State(Protocol):
     def switch(self, sav) -> None:
@@ -25,12 +26,14 @@ class SAV:
         global mergeFlag
         global turnOne
         global turnTwo
-        global pickUpSideOne
-        global pickUpSideTwo
+        global pickUpSide
+        global dropOffSide
         global motorInstruc
         global pwmA
         global pwmB
-        global startTime    
+        global pwmSmall
+        global pwmLarge
+        global startTime
 
         phaseA: int = 6
         enableA: int = 13
@@ -61,13 +64,18 @@ class SAV:
 
         pwmA = GPIO.PWM(enableA, 1000)
         pwmB = GPIO.PWM(enableB, 1000)
+        pwmSmall = GPIO.PWM(smallServoCtrl, 50) 
+        pwmLarge = GPIO.PWM(smallServoCtrl, 50)
         pwmA.start(0)
         pwmB.start(0)
+        pwmSmall.start(0) 
+        pwmLarge.start(0)
 
     def switch(self, sav) -> None:
         self.state.switch(self)
         
 class IDLE:
+
     def userWait() -> None: 
         while(True):        
             match input('Type "Start" to begin program when you\'re ready: \n').lower():
@@ -81,12 +89,13 @@ class IDLE:
         print('Changing state to LISTENING')
 
 class LISTENING:
+
     def findPath() -> None:
         TParray: list[bool] = MV() 
         turnOne: bool = TParray(0)
-        pickUpSideOne: bool = TParray(1)
+        pickUpSide: bool = TParray(1)
         turnTwo: bool = TParray(2)
-        pickUpSideTwo: bool = TParray(3)
+        dropOffSide: bool = TParray(3)
 
     def userWait() -> None:
         while(True):
@@ -97,17 +106,18 @@ class LISTENING:
                     print('Invalid, try again. \n')
 
     def startStopWatch() -> None: # Move into userWait() method?
-        startTime: float = time()
+        startTime: float = time.time()
 
     def switch(self, sav) -> None:
         sav.state = MOVING()
         print('Changing state to MOVING')
 
 class MOVING:
+
     def driving() -> None:
         while(True): 
             rangeOut = bool(GPIO.input(rangeSense))
-            if movPhase == 'phasePickDrop' | 'phasePark':
+            if movPhase == 'phasePickDrop' | 'phasePark': # We are only listening to the range sensor if we are in these phases
                 if rangeOut == True:
                     GPIO.output(phaseA, 0)
                     pwmA.ChangeDutyCycle(0)
@@ -141,24 +151,50 @@ class MOVING:
                 print('Changing state to PARKING')
 
 class PICKUP:
-    # NOTE Should at some point indicate that this state has been jumped to so that sav moves to the next MOVING phase
-    # Should stop the sav (send data to the motor driver)
-    # Potentially change motor driver mode
     # Potentially fix position (to ensure it picks up in right place)
-    # Send data to large servo (some function, will need to go up and down)
-    # Send data to small servo (some function)
+    #   - Check reflect sensor to see if we are in middle of the track
+    #   - If it doesn't return [0, 0, 0, 1, 1, 1, 0, 0, 0] then fix position
+    movPhase: str = 'phaseMerge'
+    def pickUpLegoMan() -> None:
+        setSmallServo(120) # These may need to switch
+        time.sleep(2)
+        if pickUpSide == False:
+            setLargeServo(180) # These may need to switch
+        else:
+            setLargeServo(0)
+        time.sleep(2)
+        setSmallServo(0)
+        time.sleep(2)
+        setLargeServo(90)
+        time.sleep(2)
+
     def switch(self, sav) -> None:
         sav.state = MOVING()
         print('Changing state to MOVING')
 
 class DROPOFF:
-    # Essentially it needs to complete the same task in PICKUP but maybe a different order or values
+    movPhase: str = 'phaseMerge'
+    def dropOffLegoMan() -> None:
+        if dropOffSide == False:
+            setLargeServo(180)
+        else: 
+            setLargeServo(0)
+        time.sleep(2)
+        setSmallServo(120)
+        time.sleep(2)
+        setLargeServo(90)
+        time.sleep(2)
+        setSmallServo(0)
+        time.sleep(2)
+
     def switch(self, sav) -> None:
         sav.state = MOVING()
         print('Changing state to MOVING')
 
 class PARKING:
-    # Should stop, re-adjust if needed 
+
+    def parkSAV() -> None:
+        ...
     # NOTE not sure if any other tasks need to be complete during this state
     def switch(self, sav) -> None:
         sav.state = COMPLETE()
@@ -166,13 +202,13 @@ class PARKING:
 
 class COMPLETE:
     def endStopWatch() -> None:
-        endTime: float = time()
+        endTime: float = time.time()
         raceTime: float = endTime - startTime
         minutes: int = raceTime//60
         seconds: float = raceTime%60
         print('You took %d minutes and %f seconds to complete the track. ' % (minutes, seconds))
 
-    def clean():
+    def clean() -> None:
         GPIO.cleanup()
     
     def switch(self, sav) -> None:
@@ -191,5 +227,24 @@ def main() -> None:
     sav.switch() # Move to MOVING state
 
     sav.driving()
+    sav.switch() # Move to PICKUP state
+
+    sav.pickUpLegoMan()
+    sav.switch() # Move to MOVING state
+
+    sav.driving()
+    sav.switch() # Move to DROPOFF state
+
+    sav.dropOffLegoMan()
+    sav.switch() # Move to MOVING state
+
+    sav.driving()
     sav.switch() # Move to PARKING state
+
+    sav.parkSAV()
+    sav.switch() # Move to COMPLETE state
+
+    sav.endStopWatch()
+    sav.clean()
+
     

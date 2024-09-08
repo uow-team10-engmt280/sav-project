@@ -137,23 +137,23 @@ def MV() -> list[int]:
         # print(boxes)
         if numBoxes > 1:
             if boxes[1] > int(rimage.shape[1])*7/8:
-                direction1 = [0, 0]
+                direction1 = [False, False]
             elif boxes[1] > int(rimage.shape[1])*6/8:
-                direction1 = [0, 1]
+                direction1 = [False, True]
             elif boxes[1] > int(rimage.shape[1])*5/8:
-                direction1 = [1, 0]
+                direction1 = [True, False]
             elif boxes[1] > int(rimage.shape[1])*4/8:
-                direction1 = [1, 1]
+                direction1 = [True, True]
 
         if numBoxes > 0:
             if boxes[0] < int(rimage.shape[1])*1/8:
-                direction2 = [0, 0]
+                direction2 = [False, False]
             elif boxes[0] < int(rimage.shape[1])*2/8:
-                direction2 = [0, 1]
+                direction2 = [False, True]
             elif boxes[0] < int(rimage.shape[1])*3/8:
-                direction2 = [1, 0]
+                direction2 = [True, False]
             elif boxes[0] < int(rimage.shape[1])*4/8:
-                direction2 = [1, 1]
+                direction2 = [True, True]
 
 
         direction = direction1 + direction2
