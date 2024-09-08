@@ -41,19 +41,19 @@ def FindCase() -> list[int]:
                                 match rSensor: # TURNING LEFT
                                     case [0, 0, 1, 1, 1, 1, 0, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 0, 1, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 0, 1]: 
                                         return [1, 45, 1, 50]
-                                    case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
+                                    case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 1, 1, 1, 1, 1, 0, 0, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
                                         return [1, 40, 1, 50]
                                     case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [0, 0, 0, 0, 1, 1, 1, 0, 1]: 
                                         return [1, 50, 1, 45]
-                                    case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                                    case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 30, 1, 45]
                                     case [1, 1, 0, 0, 0, 0, 0, 1, 1]: 
                                         return [1, 20, 1, 45]
-                                    case [0, 0, 0, 0, 0, 1, 1, 1, 1] | [0, 1, 1, 1, 1, 1, 0, 0, 0]:
+                                    case [0, 0, 0, 0, 0, 1, 1, 1, 1] | [0, 0, 0, 1, 1, 1, 1, 1, 0]:
                                         return [1, 50, 1, 40]
                                     case [1, 0, 0, 0, 0, 0, 0, 0, 1]:
                                         return [1, 10, 1, 35]
-                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
+                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
                                         return [1, 45, 1, 30]
                                     case _:
                                         return [1, 50, 1, 50]
@@ -65,7 +65,7 @@ def FindCase() -> list[int]:
                                         return [1, 50, 1, 40]
                                     case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 0, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 45, 1, 50]
-                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
+                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
                                         return [1, 45, 1, 30]
                                     case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0]: 
                                         return [1, 40, 1, 50]
@@ -73,7 +73,7 @@ def FindCase() -> list[int]:
                                         return [1, 40, 1, 20]
                                     case [1, 0, 0, 0, 0, 0, 0, 0, 1]: 
                                         return [1, 35, 1, 10]
-                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 30, 1, 45]
                                     case _:
                                         return [1, 50, 1, 50]
@@ -82,19 +82,19 @@ def FindCase() -> list[int]:
                                 match rSensor: # TURNING LEFT
                                     case [0, 0, 1, 1, 1, 1, 0, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 0, 1, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 0, 1]: 
                                         return [1, 45, 1, 50]
-                                    case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
+                                    case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 1, 1, 1, 1, 1, 0, 0, 0] | [0, 1, 1, 1, 0, 1, 1, 1, 0]: 
                                         return [1, 40, 1, 50]
                                     case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [0, 0, 0, 0, 1, 1, 1, 0, 1]: 
                                         return [1, 50, 1, 45]
-                                    case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                                    case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 30, 1, 45]
                                     case [1, 1, 0, 0, 0, 0, 0, 1, 1]: 
                                         return [1, 20, 1, 45]
-                                    case [0, 0, 0, 0, 0, 1, 1, 1, 1] | [0, 1, 1, 1, 1, 1, 0, 0, 0]:
+                                    case [0, 0, 0, 0, 0, 1, 1, 1, 1] | [0, 0, 0, 1, 1, 1, 1, 1, 0]:
                                         return [1, 50, 1, 40]
                                     case [1, 0, 0, 0, 0, 0, 0, 0, 1]:
                                         return [1, 10, 1, 35]
-                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
+                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
                                         return [1, 45, 1, 30]
                                     case _:
                                         return [1, 50, 1, 50]
@@ -106,7 +106,7 @@ def FindCase() -> list[int]:
                                         return [1, 50, 1, 40]
                                     case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 0, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 45, 1, 50]
-                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
+                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1] | [1, 1, 1, 0, 0, 0, 1, 1, 1] | [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
                                         return [1, 45, 1, 30]
                                     case [1, 1, 1, 1, 0, 0, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 1, 0]: 
                                         return [1, 40, 1, 50]
@@ -114,42 +114,62 @@ def FindCase() -> list[int]:
                                         return [1, 40, 1, 20]
                                     case [1, 0, 0, 0, 0, 0, 0, 0, 1]: 
                                         return [1, 35, 1, 10]
-                                    case [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                                    case [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
                                         return [1, 30, 1, 45]
                                     case _:
                                         return [1, 50, 1, 50]
-                    case 'phasePickDrop':
-                        if pickDropFlag == False: 
-                            ...
-                        else:
-                            ...
                     case 'phaseMerge':
                         match rSensor:
                             case [0, 0, 1, 1, 1, 1, 0, 0, 0] | [0, 0, 0, 1, 1, 1, 1, 0, 0] | [0, 0, 1, 1, 1, 1, 1, 0, 0]:
                                 return [1, 50, 1, 50]
-                            case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
+                            case [0, 1, 1, 1, 1, 0, 0, 0, 0] | [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
                                 return [1, 40, 1, 50]
                             case [1, 1, 1, 1, 0, 0, 0, 0, 0]: 
                                 return [1, 30, 1, 45]
-                            case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [1, 1, 1, 1, 1, 0, 0, 0, 0]: 
+                            case [0, 0, 0, 0, 1, 1, 1, 1, 0] | [0, 0, 0, 0, 1, 1, 1, 1, 1]: 
                                 return [1, 50, 1, 40]
                             case [0, 0, 0, 0, 0, 1, 1, 1, 1]: 
                                 return [1, 45, 1, 20]
                             case [0, 0, 0, 1, 1, 1, 1, 1, 0]: 
-                                return [1, 45, 1, 50]
-                            case [0, 1, 1, 1, 1, 1, 0, 0, 0]: 
                                 return [1, 50, 1, 45]
+                            case [0, 1, 1, 1, 1, 1, 0, 0, 0]: 
+                                return [1, 45, 1, 50]
                             case _:
-                                if pickDropFlag == False:
-                                    ...
+                                if pickDropFlag == False: 
+                                    if turnOne == False: 
+                                        match rSensor:
+                                            case [0, 0, 0, 1, 1, 1, 0, 1, 1] | [0, 0, 0, 1, 1, 1, 0, 0, 1]:
+                                                return [1, 50, 1, 50] 
+                                            case [0, 0, 1, 1, 1, 0, 1, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 0, 1]:
+                                                return [1, 45, 1, 50] 
+                                            case [0, 0, 0, 0, 1, 1, 1, 0, 1]:
+                                                return [1, 50, 1, 45] 
+                                    else:
+                                        match rSensor:
+                                            case [1, 1, 0, 1, 1, 1, 0, 0, 0] | [1, 0, 0, 1, 1, 1, 0, 0, 0]:
+                                                return [1, 50, 1, 50]
+                                            case [1, 1, 1, 0, 1, 1, 1, 0, 0] | [1, 1, 0, 0, 1, 1, 1, 0, 0] | [1, 0, 0, 0, 1, 1, 1, 0, 0]: 
+                                                return [1, 45, 1, 50]
+                                            case [1, 0, 1, 1, 1, 0, 0, 0, 0]: 
+                                                return [1, 50, 1, 45]
                                 else:
-                                    ...
-
-
-                        
-                    case 'phasePark': # We get to this phase after the last merge as we are moving up to the parking spot
-                        ...
-
+                                    if turnTwo == False:
+                                        match rSensor:
+                                            case [0, 0, 0, 1, 1, 1, 0, 1, 1] | [0, 0, 0, 1, 1, 1, 0, 0, 1]:
+                                                return [1, 50, 1, 50] 
+                                            case [0, 0, 1, 1, 1, 0, 1, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 1, 1] | [0, 0, 1, 1, 1, 0, 0, 0, 1]:
+                                                return [1, 45, 1, 50] 
+                                            case [0, 0, 0, 0, 1, 1, 1, 0, 1]:
+                                                return [1, 50, 1, 45] 
+                                    else:
+                                        match rSensor:
+                                            case [1, 1, 0, 1, 1, 1, 0, 0, 0] | [1, 0, 0, 1, 1, 1, 0, 0, 0]:
+                                                return [1, 50, 1, 50]
+                                            case [1, 1, 1, 0, 1, 1, 1, 0, 0] | [1, 1, 0, 0, 1, 1, 1, 0, 0] | [1, 0, 0, 0, 1, 1, 1, 0, 0]: 
+                                                return [1, 45, 1, 50]
+                                            case [1, 0, 1, 1, 1, 0, 0, 0, 0]: 
+                                                return [1, 50, 1, 45]
+'''
 [0, 0, 0, 1, 1, 1, 0, 0, 0] # IN THE MIDDLE                 - Should have motors equal
 
 [0, 0, 0, 0, 0, 0, 0, 0, 0] # FULLY OFF TRACK               - Should be stopped, zero to motors
@@ -285,8 +305,6 @@ def FindCase() -> list[int]:
 
 [0, 0, 1, 1, 1, 0, 0, 0, 1] # FOLLOWING FORK LEFT 3, STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
 
-
-
 # COMING UP TO THE MERGE - FROM LEFT
 # TODO version 1 (coming from left)
 [0, 0, 1, 1, 1, 0, 1, 1, 1] # MERGING FROM LEFT 1, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
@@ -300,8 +318,6 @@ def FindCase() -> list[int]:
 [0, 0, 0, 1, 1, 1, 0, 0, 1] # MERGING FROM 2, ON POINT
 
 [0, 0, 1, 1, 1, 0, 0, 0, 1] # MERGING FROM LEFT 3, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
-
-
 
 # FOLLOWING THE FORK - TURNING RIGHT
 # TODO version 2 (turning right)
@@ -332,8 +348,4 @@ def FindCase() -> list[int]:
 [1, 0, 0, 1, 1, 1, 0, 0, 0] # MERGING FROM RIGHT 2, ON POINT 
 
 [1, 0, 0, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 3, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
-
-
-
-# TODO PARKING MARKINGS
-
+'''
