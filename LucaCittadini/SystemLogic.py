@@ -29,14 +29,12 @@ much this affects perform, but the code would be pretty simple (maybe motor driv
 # MOVING --> PARKING
 # PARKING --> COMPLETED
 
-#  `  ~  q  Q  c  A   1  !
-
 '''
 NOTE 
 - May want to create some functions that make the servos do specific tasks (will be reused in PICKUP and DROPOFF)
 
 '''
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore 
 from time import time
 from typing import Protocol
 from MachineVisionMain import MV 
@@ -49,6 +47,36 @@ class State(Protocol):
 class SAV:
     def __init__(self):
         self.state = IDLE()
+        global phaseA
+        global enableA
+        global phaseB
+        global enableB
+
+        phaseA = 6
+        enableA = 13
+        phaseB = 19
+        enableB = 26
+        smallServoCtrl = 5
+        largeServoCtrl = 0
+        rangeSense = 2
+
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(phaseA, GPIO.OUT)
+        GPIO.setup(enableA, GPIO.OUT) # THIS PIN SUPPORTS PWM
+        GPIO.setup(phaseB, GPIO.OUT)
+        GPIO.setup(enableB, GPIO.OUT) # THIS PIN DOES NOT SUPPORT PWM, GPIO12 DOES SUPPORT PWM
+        GPIO.setup(largeServoCtrl, GPIO.OUT) # SMALL SERVO
+        GPIO.setup(smallServoCtrl, GPIO.OUT) # LARGE SERVO
+        GPIO.setup(rangeSense, GPIO.IN) # RANGE SENSOR
+        
+        GPIO.output(phaseA, GPIO.LOW)
+        GPIO.output(enableA, GPIO.LOW)
+        GPIO.output(phaseB, GPIO.LOW)
+        GPIO.output(enableB, GPIO.LOW)
+
+
+
         global movPhase
         global forkFlag
         global pickDropFlag
@@ -58,13 +86,15 @@ class SAV:
         global turnTwo
         global pickUpSideOne
         global pickUpSideTwo
-        global rangeSense
+        global motorInstruc
 
         movPhase: str = 'phaseFork'
         forkFlag: bool = False
         pickDropFlag: bool = False
         mergeFlag: bool = False
         motorDriverMode: bool = False
+
+
 
     def switch(self) -> None:
         self.state.switch(self)
@@ -76,7 +106,6 @@ class IDLE:
                 break
             case _:
                 print('Invalid, try again. \n')
-                ...
     def switch(self, sav) -> None:
         sav.state = LISTENING()
         print('Changing state')
@@ -94,7 +123,6 @@ class LISTENING:
     
 
     # Start reflectance sensor programme
-
     while(True):
         match input('Decisions received, type "Next" to start race: \n').lower():
             case 'n' | 'next':
@@ -116,10 +144,20 @@ class MOVING:
                 if rangeSense == 1:
                     ... # Stop driving/moving
                 else:
-                    return FindCase()
+                    motorInstruc = FindCase()
+                    # phaseA = motorInstruc(0)
+                    # enableA = motorInstruc(1)
+                    # phaseB = motorInstruc(2)
+                    # enableB = motorInstruc(3)
+
             else:
-                return FindCase()
-            
+                motorInstruc = FindCase()
+                # phaseA = motorInstruc(0)
+                # enableA = motorInstruc(1)
+                # phaseB = motorInstruc(2)
+                # enableB = motorInstruc(3)
+
+
     # Sends the decision to the motor driver to turn the sav accordingly
     
     if pickDropFlag == False:
