@@ -1,0 +1,39 @@
+This text document just explains how each of the devices work and how they should be 
+used/interacted with.
+
+
+QTRX-HD-09RC - The reflectance sensor:
+
+This device is used to essentially identify light intensity which can then be related
+to colour (at least at a grey scale level).
+
+How it works:
+This a very simple circuit consisting of an emitter, receiver, capacitor and resistor.
+The emitter is an infrared LED that can be activated through a microcontroller. The 
+receiver is a phototransistor that takes in the infrared light emitted from the LED, 
+the resistance of this phototransistor depends on the intensity of the light it is 
+receiving, a higher intensity means less resistance. The capacitor and resistor are 
+used for timing, the capacitor is automatically charged up through the path of the
+resistor and is then ready to be discharged when the phototransistor receives some 
+infrared light. The "RC" at the end of the name describes this capacitor-resistor 
+circuit.
+
+When the infrared LED is turned on, if a surface is close enough then the 
+phototransistor will receive some of this as reflected light, the intensity of this 
+reflected light depends upon the colour of the surface, a white surface will reflect 
+the most amount of light and a black surface the least. The phototransistor is wired 
+to make a connection to ground when activated so that the capacitor discharges through
+this path. Because the resistance of the phototransistor depends on the intensity of 
+the infrared light received as reflected light off of surfaces, and because the "time 
+constant" is equal to the capacitance of the capacitor (a constant), multiplied by the
+resistance, if the resistance is higher due to the surface being darker then the time 
+that it takes for the capacitor to discharge will be longer. In simple words, the 
+lighter a surface is, the quicker the capacitor will discharge, the time it takes to 
+discharge can be measured through the Raspberry Pi. This is how you can tell what the 
+colour is of the surface you are looking at with the sensor is. 
+
+The "09" part of the name describes that we have an array of 9 of these circuits. Each 
+circuit is wired up to their own pin on the reflectance sensor, which is why we need to 
+hook up 9 individual GPIO pins on the Raspberry Pi. 
+
+How it should be used:
