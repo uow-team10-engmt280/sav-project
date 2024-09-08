@@ -1,0 +1,191 @@
+
+BASIC MOVEMENT:
+[0, 0, 0, 1, 1, 1, 0, 0, 0] # IN THE MIDDLE                 - Should have motors equal
+
+[0, 0, 0, 0, 0, 0, 0, 0, 0] # FULLY OFF TRACK               - Should be stopped, zero to motors
+
+[1, 1, 1, 1, 1, 1, 1, 1, 1] # ABSOLUTELY FUCKED (DERAILED)  - Should be stopped, zero to motors
+
+
+BASIC TURNING:
+STRAYING LEFT
+[0, 0, 0, 0, 1, 1, 1, 0, 0] # STRAYING TO THE LEFT SLIGHTY  - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 0, 0, 1, 1, 1, 0] # STRAYING TO THE LEFT          - Left motor should decrease slightly (-5%), Right motor should decrease (-15%)
+
+[0, 0, 0, 0, 0, 0, 1, 1, 1] # STRAYING TO THE LEFT CONSIDERABLY         - Left motor should decrease (-10%), Right motor should decrease considerably (-25%)
+
+[0, 0, 0, 0, 0, 0, 0, 1, 1] # STRAYING VERY FAR TO THE LEFT             - Left motor should decrease considerably (-15%), Right motor should decrease further (-35%)
+
+[0, 0, 0, 0, 0, 0, 0, 0, 1] # COMPLETELY TO THE LEFT, ALMOST OFF TRACK  - Left motor should decrease further (-20%), Right motor should be barely running (-45%)
+
+STRAYING RIGHT
+[0, 0, 1, 1, 1, 0, 0, 0, 0] # STRAYING TO THE RIGHT SLIGHTY  - Left motor should decrease slightly (-5%)
+    
+[0, 1, 1, 1, 0, 0, 0, 0, 0] # STRAYING TO THE RIGHT          - Right motor should decrease slightly (-5%), Left motor should decrease (-15%) 
+    
+[1, 1, 1, 0, 0, 0, 0, 0, 0] # STRAYING TO THE RIGHT CONSIDERABLY         - Right motor should decrease (-10%), Left motor should decrease considerably (-25%)
+    
+[1, 1, 0, 0, 0, 0, 0, 0, 0] # STRAYING VERY FAR TO THE RIGHT             - Right motor should decrease considerably (-15%), Left motor should decrease further (-35%)
+
+[1, 0, 0, 0, 0, 0, 0, 0, 0] # COMPLETELY TO THE RIGHT, ALMOST OFF TRACK  - Right motor should decrease further (-20%), Left motor should be barely running (-45%)
+
+
+NAVIGATING FORKS:
+COMING UP TO FORK - TURNING LEFT
+[0, 0, 1, 1, 1, 1, 0, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
+
+[0, 1, 1, 1, 1, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT          - Left motor should decrease (-10%)
+
+[1, 1, 1, 1, 0, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 1, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY LEFT 
+
+[0, 0, 0, 0, 1, 1, 1, 1, 0] # COMING UP TO FORK BUT STRAYING LEFT               - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 0, 0, 1, 1, 1, 1] # COMING UP TO FORK BUT STRAYING LEFT CONSIDERABLY  - Right motor should decrease (-10%)
+
+COMING UP TO THE FORK - TURNING RIGHT
+[0, 0, 0, 1, 1, 1, 1, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 0, 1, 1, 1, 1, 0] # COMING UP TO FORK BUT STRAYING LEFT          - Right motor should decrease (-10%)
+
+[0, 0, 0, 0, 0, 1, 1, 1, 1] # COMING UP TO FORK BUT STRAYING LEFT CONSIDERABLY  - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+
+[0, 0, 1, 1, 1, 1, 0, 0, 0] # COMING UP TO FORK BUT STRAYING SLIGHTLY RIGHT 
+
+[0, 1, 1, 1, 1, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT              - Left motor should decrease slightly (-5%)
+
+[1, 1, 1, 1, 0, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease (-10%)
+
+ON THE FORK - TURNING LEFT
+[0, 0, 1, 1, 1, 1, 1, 0, 0] # DIRECTLY ON THE FORK                            - Left motor should decrease slightly (-5%)
+    
+[0, 0, 0, 1, 1, 1, 1, 1, 0] # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY LEFT - Left motor should decrease (-10%)
+    
+[0, 0, 0, 0, 1, 1, 1, 1, 1] # DIRECTLY ON THE FORK BUT STRAYING LEFT          - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+    
+[0, 1, 1, 1, 1, 1, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY RIGHT - Right motor should decrease (-10%)
+    
+[1, 1, 1, 1, 1, 0, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING RIGHT          - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+
+ON THE FORK - TURNING RIGHT
+[0, 0, 1, 1, 1, 1, 1, 0, 0] # DIRECTLY ON THE FORK - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 1, 1, 0] # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY LEFT  - Left motor should decrease (-10%)
+    
+[0, 0, 0, 0, 1, 1, 1, 1, 1] # DIRECTLY ON THE FORK BUT STRAYING LEFT           - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+    
+[0, 1, 1, 1, 1, 1, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY RIGHT - Right motor should decrease (-10%)
+    
+[1, 1, 1, 1, 1, 0, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING RIGHT          - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+
+GOING PAST THE FORK - TURNING LEFT
+[0, 1, 1, 1, 0, 1, 1, 1, 0] # CENTERED ON FORK BUT SLIGHTLY PAST  - Left motor should decrease (-10%)
+
+[1, 1, 1, 0, 0, 0, 1, 1, 1] # CENTERED ON FORK BUT PAST           - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+    
+[1, 1, 0, 0, 0, 0, 0, 1, 1] # CENTERED ON FORK BUT PAST CONSIDERABLY - Left motor should decrease majorly (-30%), Right motor should decrease (-10%)
+    
+[1, 0, 0, 0, 0, 0, 0, 0, 1] # CENTERED ON FORK BUT VERY FAR PAST     - Left motor should decrease massively (-40%), Right motor should decrease more (-15%)
+
+GOING PAST THE FORK - TURNING RIGHT
+[0, 1, 1, 1, 0, 1, 1, 1, 0] # CENTERED ON FORK BUT SLIGHTLY PAST  - Right motor should decrease (-10%)
+
+[1, 1, 1, 0, 0, 0, 1, 1, 1] # CENTERED ON FORK BUT PAST           - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
+    
+[1, 1, 0, 0, 0, 0, 0, 1, 1] # CENTERED ON FORK BUT PAST CONSIDERABLY - Right motor should decrease majorly (-30%), Left motor should decrease (-10%)
+    
+[1, 0, 0, 0, 0, 0, 0, 0, 1] # CENTERED ON FORK BUT VERY FAR PAST     - Right motor should decrease massively (-40%), Left motor should decrease more (-15%)
+
+FOLLOWING THE FORK - TURNING LEFT 
+[0, 0, 1, 1, 1, 0, 1, 1, 1] # FOLLOWING FORK LEFT 1, STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
+    
+[0, 0, 0, 1, 1, 1, 0, 1, 1] # FOLLOWING FORK LEFT 1, ON POINT
+    
+[0, 0, 0, 0, 1, 1, 1, 0, 1] # FOLLOWING FORK LEFT 1, STRAYING SLIGHTLY TOO FAR LEFT - Right motor should decrease (-10%)
+
+[0, 0, 1, 1, 1, 0, 0, 1, 1] # FOLLOWING FORK LEFT 2, STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 0, 0, 1] # FOLLOWING FORK LEFT 2, ON POINT
+
+[0, 0, 1, 1, 1, 0, 0, 0, 1] # FOLLOWING FORK LEFT 3, STRAYING SLIGHTLY RIGHT - Left motor should decrease slightly (-5%)
+
+FOLLOWING THE FORK - TURNING RIGHT
+[1, 1, 1, 0, 1, 1, 1, 0, 0] # FOLLOWING FORK RIGHT 1, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
+
+[1, 1, 0, 1, 1, 1, 0, 0, 0] # FOLLOWING FORK RIGHT 1, ON POINT 
+
+[1, 0, 1, 1, 1, 0, 0, 0, 0] # FOLLOWING FORK RIGHT 1, STRAYING SLIGHTLY TOO FAR RIGHT - Left motor should decrease slightly (-5%)
+
+[1, 1, 0, 0, 1, 1, 1, 0, 0] # FOLLOWING FORK RIGHT 2, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
+
+[1, 0, 0, 1, 1, 1, 0, 0, 0] # FOLLOWING FORK RIGHT 2, ON POINT 
+
+[1, 0, 0, 0, 1, 1, 1, 0, 0] # FOLLOWING FORK RIGHT 3, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
+
+
+NAVIGATING MERGES:
+LEAVING THE MERGE (same for both sides)
+[0, 0, 1, 1, 1, 1, 0, 0, 0] # LEAVING THE MERGE BUT STRAYING SLIGHTLY RIGHT
+
+[0, 1, 1, 1, 1, 0, 0, 0, 0] # LEAVING THE MERGE BUT STRAYING RIGHT              - Left motor should decrease (-10%)
+
+[1, 1, 1, 1, 0, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease considerably (-20%), Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 1, 0, 0] # LEAVING THE MERGE BUT STRAYING SLIGHTLY LEFT
+
+[0, 0, 0, 0, 1, 1, 1, 1, 0] # COMING UP TO FORK BUT STRAYING LEFT               - Right motor should decrease (-10%)
+
+[0, 0, 0, 0, 0, 1, 1, 1, 1] # COMING UP TO FORK BUT STRAYING LEFT CONSIDERABLY  - Right motor should decrease considerably (-20%), Left motot should increase slightly (-5%)
+
+ON THE MERGE (same for both sides)
+[0, 0, 1, 1, 1, 1, 1, 0, 0] # DIRECTLY ON THE MERGE
+
+[0, 0, 0, 1, 1, 1, 1, 1, 0] # DIRECTLY ON THE MERGE BUT STRAYING SLIGHTLY LEFT   - Left motor should decrease slightly (-5%)
+    
+[0, 0, 0, 0, 1, 1, 1, 1, 1] # DIRECTLY ON THE FORK BUT STRAYING LEFT             - Left motor should decrease (-10%)
+
+[0, 1, 1, 1, 1, 1, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING SLIGHTLY RIGHT   - Right motor should decrease slightly (-5%)
+    
+[1, 1, 1, 1, 1, 0, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING RIGHT            - Right motor should decrease (-10%)
+
+COMING UP TO THE MERGE - FROM LEFT
+[0, 0, 1, 1, 1, 0, 1, 1, 1] # MERGING FROM LEFT 1, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 0, 1, 1] # MERGING FROM LEFT 1, ON POINT
+
+[0, 0, 0, 0, 1, 1, 1, 0, 1] # MERGING FROM LEFT 1, STRAYING SLIGHTLY TOO FAR LEFT - Left motor should decrease slightly (-5%)
+
+[0, 0, 1, 1, 1, 0, 0, 1, 1] # MERGING FROM LEFT 2, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
+
+[0, 0, 0, 1, 1, 1, 0, 0, 1] # MERGING FROM 2, ON POINT
+
+[0, 0, 1, 1, 1, 0, 0, 0, 1] # MERGING FROM LEFT 3, STRAYING SLIGHTLY RIGHT - Right motor should decrease slightly (-5%)
+
+
+COMING UP TO THE MERGE - FROM RIGHT
+[1, 1, 1, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 1, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
+
+[1, 1, 0, 1, 1, 1, 0, 0, 0] # MERGING FROM RIGHT 1, ON POINT 
+
+[1, 0, 1, 1, 1, 0, 0, 0, 0] # MERGING FROM RIGHT 1, STRAYING SLIGHTLY TOO FAR RIGHT - Right motor should decrease slightly (-5%)
+
+[1, 1, 0, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 2, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
+
+[1, 0, 0, 1, 1, 1, 0, 0, 0] # MERGING FROM RIGHT 2, ON POINT 
+
+[1, 0, 0, 0, 1, 1, 1, 0, 0] # MERGING FROM RIGHT 3, STRAYING SLIGHTLY LEFT - Left motor should decrease slightly (-5%)
+
+
+Some notes:
+
+All of the motor changes are assuming that the base motor speed is 50%, can be changed later if too slow.
+Where it doesn't have a motor speed suggestion then it means just go at full speed (as in motors each at 50%
+not 100%, once again up to the person coding and can be changed). Also a side note that some of the suggestions
+may be wrong as it was late at night when I did it, so if it looks wrong then just change it.
+
+NOTE: It assumes that white is "1" and black is "0". 
+
+If you want to take them for the "System Logic" assignment, I would recommend just taking some of the main ones and then
+equating them to a print statement.

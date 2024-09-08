@@ -225,7 +225,7 @@ def FindCase() -> list[int]:
 
 [1, 1, 1, 1, 0, 0, 0, 0, 0] # COMING UP TO FORK BUT STRAYING RIGHT CONSIDERABLY - Left motor should decrease (-10%)
 
-# LEAVING THE MERGE NOTE same for both sides
+# LEAVING THE MERGE (same for both sides)
 [0, 0, 1, 1, 1, 1, 0, 0, 0] # LEAVING THE MERGE BUT STRAYING SLIGHTLY RIGHT
 
 [0, 1, 1, 1, 1, 0, 0, 0, 0] # LEAVING THE MERGE BUT STRAYING RIGHT              - Left motor should decrease (-10%)
@@ -261,7 +261,7 @@ def FindCase() -> list[int]:
     
 [1, 1, 1, 1, 1, 0, 0, 0, 0] # DIRECTLY ON THE FORK BUT STRAYING RIGHT          - Right motor should decrease considerably (-20%), Left motor should decrease slightly (-5%)
 
-# ON THE MERGE NOTE same for both sides
+# ON THE MERGE (same for both sides)
 [0, 0, 1, 1, 1, 1, 1, 0, 0] # DIRECTLY ON THE MERGE
 
 [0, 0, 0, 1, 1, 1, 1, 1, 0] # DIRECTLY ON THE MERGE BUT STRAYING SLIGHTLY LEFT   - Left motor should decrease slightly (-5%)
@@ -332,8 +332,6 @@ def FindCase() -> list[int]:
 [1, 0, 0, 1, 1, 1, 0, 0, 0] # FOLLOWING FORK RIGHT 2, ON POINT 
 
 [1, 0, 0, 0, 1, 1, 1, 0, 0] # FOLLOWING FORK RIGHT 3, STRAYING SLIGHTLY LEFT - Right motor should decrease slightly (-5%)
-
-
 
 # COMING UP TO THE MERGE - FROM RIGHT
 # TODO version 2 (coming from right)

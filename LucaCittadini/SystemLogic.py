@@ -68,8 +68,8 @@ class SAV:
         self.state.switch(self)
         
 class IDLE:
-    def userWait() -> None:
-        while(True):
+    def userWait() -> None: 
+        while(True):        
             match input('Type "Start" to begin program when you\'re ready: \n').lower():
                 case 's' | 'start':
                     break
