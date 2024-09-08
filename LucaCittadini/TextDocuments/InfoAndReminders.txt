@@ -1,0 +1,46 @@
+The sequence of state changes:
+IDLE --> LISTENING
+LISTENING --> MOVING
+MOVING --> PICKUP
+PICKUP --> MOVING
+MOVING --> DROPOFF
+DROPOFF --> MOVING
+MOVING --> PARKING
+PARKING --> COMPLETED
+
+1. Could create seperate functions to control the servos in another file to just import and call them.
+
+2. Don't forget to remove some comments like "# type: ignore", this is used to ignore problems that 
+we know aren't problems, but should remove later just incase there are problems.
+
+3. EnableA for the motor driver is wired up to GPIO13 on the raspberry Pi, I believe this is PWM capable,
+however EnableB is wired up to GPIO26, which I don't believe is PWM capable. NEED TO CHECK THIS 
+
+4. The small servo is Wired up to GPIO5, the large servo is wired up to GPIO0, I'm not sure but I think 
+that both the servos need PWM signals and I don't think that these GPIO pins are PWM capable. NEED TO CHECK
+THIS
+
+5. Here are the GPIO pins
+
+    To be used as OUTPUT:
+        - GPIO6 --> PHASEA (motor driver, ON/OFF)
+        - GPIO13 --> ENABLEA (motor driver, speed in %)
+        - GPIO19 --> PHASEB (motor driver, ON/OFF)
+        - GPIO26 --> ENABLEB (motor driver, speed in %)
+        - GPIO5 --> Small servo Control
+        - GPIO0 --> Large servo Control
+    To be used as INPUT:
+        - GPIO2 --> Range sensor output  
+
+6. We don't have a connection to the motor driver MODE pin. If we get another PCB then we should get add this 
+connection (should also redesign to accommodate the PWMs needed)
+
+7. Maybe add something to the SystemLogic programme (or MachineVisionMain??) to wait until the correct list has
+been returned through the function
+
+8. What would "end the programme nicely" entail - (not actually sure if this is a thing or if it just involves
+GPIO cleanup)
+
+9. Make sure that each programme is written so it can just be imported as a function and used like so
+
+10. NEED TO FIX THE "MachineVisionMain.py" PROGRAMME***
