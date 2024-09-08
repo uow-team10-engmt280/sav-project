@@ -37,11 +37,10 @@ NOTE
 
 '''
 # import RPi.GPIO as GPIO
-import numpy as np # NOTE Currently unused
 from time import time
 from typing import Protocol
 from MachineVisionMain import MV 
-
+from FindCase import FindCase
 
 class State(Protocol):
     def switch(self, sav) -> None:
@@ -50,26 +49,25 @@ class State(Protocol):
 class SAV:
     def __init__(self):
         self.state = IDLE()
+        global movPhase
+        global forkFlag
+        global pickDropFlag
+        global mergeFlag
+        global motorDriverMode
+        global turnOne
+        global turnTwo
+        global pickUpSideOne
+        global pickUpSideTwo
+        global rangeSense
+
+        movPhase: str = 'phaseFork'
+        forkFlag: bool = False
+        pickDropFlag: bool = False
+        mergeFlag: bool = False
+        motorDriverMode: bool = False
 
     def switch(self) -> None:
         self.state.switch(self)
-
-# Initialise some values + settings (motor driver mode etc.) NOTE is there a cleaner way to initialise values?
-global movPhase
-global forkFlag
-global pickDropFlag
-global mergeFlag
-global motorDriverMode
-global turnOne
-global turnTwo
-global pickUpSideOne
-global pickUpSideTwo
-
-movPhase: str = 'phaseFork'
-forkFlag: bool = False
-pickDropFlag: bool = False
-mergeFlag: bool = False
-motorDriverMode: bool = False
 
 class IDLE:
     while(True):
@@ -88,8 +86,6 @@ class LISTENING:
     
     # May want to wait until the Machine Vision programme is fully done
 
-    
-    
     TParray: list[bool] = MV() 
     turnOne: bool = TParray(0)
     pickUpSideOne: bool = TParray(1)
@@ -116,15 +112,16 @@ class MOVING:
     print('Entered new state successfully. \n')
     def driving():
         while(True): 
-            ...
+            if movPhase == 'phasePickDrop' | 'phasePark':
+                if rangeSense == 1:
+                    ... # Stop driving/moving
+                else:
+                    return FindCase()
+            else:
+                return FindCase()
             
-        
-    
-    # It needs to request data from the reflectance sensor (might activate/start reflectance sensor programme or just request the list/array)
-    # Selects a decision about motor speeds based upon the list/array received in the previous step
     # Sends the decision to the motor driver to turn the sav accordingly
-    # Depending upon the phase, may be listening to the range sensor, if this is the case then if the RS returns a 1, move to next state/break from while loop
-
+    
     if pickDropFlag == False:
         def switch(self, sav) -> None:
             sav.state = PICKUP()

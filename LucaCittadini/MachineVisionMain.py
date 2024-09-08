@@ -170,14 +170,7 @@ def MV() -> list[int]:
     cv.destroyAllWindows()
     return direction
 
-
-
-
 # Image part still needs some fixing, but could definitely get a good mark
-
-
-
-
 
 #=============================================================================
 # Reading the camera feed

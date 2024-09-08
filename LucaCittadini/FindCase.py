@@ -1,4 +1,4 @@
-from SystemLogic import movPhase, turnOne, pickDropFlag, mergeFlag, turnTwo, forkFlag
+from SystemLogic import movPhase, turnOne, pickDropFlag, turnTwo, forkFlag
 
 global rSensor
 def FindCase() -> list[int]:
