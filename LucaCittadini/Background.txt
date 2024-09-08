@@ -1,0 +1,57 @@
+We have multiple programmes that do different things.
+
+1. SystemLogic.py
+2. MachineVisionMain.py
+3. FindCase.py
+
+Here we will explain each programme:
+
+SystemLogic:
+This programme is the center of all of them, it defines the states that the SAV can be in and what 
+each state does. The other programme's functions will be imported into this one to complete 
+whatever task they are meant to. 
+
+It is built off of a "Finite State Machine" framework where each state is it's own class. 
+
+It will start the SAV in the "IDLE" state where it will wait for a user input to move to the next
+state where it then imports the "MachineVisionMain.py" main function to get information from the camera
+to decide the path that the SAV must take. 
+
+It will move in between states to accomplish different tasks, but when it is in the "MOVING" state
+it will import the "FindCase.py" main function that will take the list of booleans obtained from the
+reflectance sensor programmme to then decide what motor speeds each motor should receive to navigate 
+the course correctly.
+
+This programme will also contain the logic for pick-up and drop-off of the lego man. 
+
+
+MachineVisionMain:
+As mentioned this programme's task is to take the video feed from the given camera and then with 
+some machine vision logic, decide what path the SAV will take. It's logic is encapsulated within a 
+function called "MV", this function will return a list of booleans of length 4. 
+
+The first element in the list represents the first turn, the second element represents the side that 
+the lego man needing  to be picked up is on, the third element represents the second turn, and the 
+fourth/last item in the list represents the side that the lego man needs to be dropped off on. A 1 
+(True) represents a "right", a 0 (False) represents a "left".
+
+
+FindCase:
+This was briefly mentioned but what this programme does is take in a list of booleans of length 9, this
+list corresponds to where the SAV is on the track. It will then return a list of integers of length 4. 
+This list describes how the SAV's motors should react based on how the track is below it. 
+
+The first element in this list is to be used for PhaseA on the motor driver (assuming that motor A is
+the left motor), which says which direction it will spin (forward or reverse, 1 for forward and 0 for 
+reverse). The second element is to be used for EnableA on the motor driver, this will be an integer value
+between 0 and 100 which relates to the speed in percentage of how fast the motor should be spinning. 
+The third element is PhaseB (so phase but for the second motor, assuming the second motor is the right 
+motor). Lastly the fourth element in the returned list is the EnableB (so the enable but for the second
+motor).
+
+
+
+NOTES:
+
+There will be extra programmes added like the one for the reflectance sensor and likely a programme called
+"main" where the sequence of the programmes will be outlined/coded. 
