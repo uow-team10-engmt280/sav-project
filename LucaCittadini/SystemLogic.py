@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO # type: ignore 
 import time
+import SOME_ARRAY # type: ignore
 from typing import Protocol
 from MachineVisionLuca import MV 
 from FindCase import FindCase
@@ -122,13 +123,13 @@ class MOVING:
                     pwmB.ChangeDutyCycle(0)
                     break
                 else:
-                    motorInstruc = FindCase()
+                    motorInstruc = FindCase(SOME_ARRAY)
                     GPIO.output(phaseA, motorInstruc(0))
                     pwmA.ChangeDutyCycle(motorInstruc(1))
                     GPIO.output(phaseB, motorInstruc(2))
                     pwmB.ChangeDutyCycle(motorInstruc(3))
             else:
-                motorInstruc = FindCase()
+                motorInstruc = FindCase(SOME_ARRAY)
                 GPIO.output(phaseA, motorInstruc(0))
                 pwmA.ChangeDutyCycle(motorInstruc(1))
                 GPIO.output(phaseB, motorInstruc(2))
@@ -150,6 +151,12 @@ class MOVING:
 class PICKUP:
     movPhase: str = 'phaseMerge'
     pickDropFlag: bool = True 
+
+    def checkPos() -> None:
+        if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
+            ... # This will stay a pass because we're fine
+        else:
+            ... # This will call some function that makes the SAV move to fix it's position
     # Potentially fix position (to ensure it picks up in right place)
     #   - Check reflect sensor to see if we are in middle of the track
     #   - If it doesn't return [0, 0, 0, 1, 1, 1, 0, 0, 0] then fix position

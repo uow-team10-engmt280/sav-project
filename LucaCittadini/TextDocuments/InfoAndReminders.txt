@@ -1,4 +1,3 @@
-
 INFOMATION:
 
 The sequence of state changes:
