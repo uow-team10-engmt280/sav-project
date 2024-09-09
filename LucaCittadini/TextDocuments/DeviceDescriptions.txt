@@ -37,3 +37,21 @@ circuit is wired up to their own pin on the reflectance sensor, which is why we 
 hook up 9 individual GPIO pins on the Raspberry Pi. 
 
 How it should be used:
+
+-----------------------------------------------------------------------------------------
+FEETECH FS90 - Micro Servo:
+
+This device is used to control the gear at the end of our arm to then move a rack which 
+will clamp the Lego figure to pick him up.
+
+How it works:
+
+
+-----------------------------------------------------------------------------------------
+FEETECH FS5106B - Standard Servo:
+
+This device is used to control the arm that moves the gripper at the end of it into 
+position to pick up the Lego figure.
+
+How it works:
+

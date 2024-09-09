@@ -123,13 +123,13 @@ class MOVING:
                     pwmB.ChangeDutyCycle(0)
                     break
                 else:
-                    motorInstruc = FindCase(SOME_ARRAY)
+                    motorInstruc = FindCase(SOME_ARRAY) # FIXME
                     GPIO.output(phaseA, motorInstruc(0))
                     pwmA.ChangeDutyCycle(motorInstruc(1))
                     GPIO.output(phaseB, motorInstruc(2))
                     pwmB.ChangeDutyCycle(motorInstruc(3))
             else:
-                motorInstruc = FindCase(SOME_ARRAY)
+                motorInstruc = FindCase(SOME_ARRAY) # FIXME
                 GPIO.output(phaseA, motorInstruc(0))
                 pwmA.ChangeDutyCycle(motorInstruc(1))
                 GPIO.output(phaseB, motorInstruc(2))
