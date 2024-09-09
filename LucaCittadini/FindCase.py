@@ -2,7 +2,7 @@ from SystemLogic import movPhase, turnOne, pickDropFlag, turnTwo, forkFlag
 
 global rSensor
 def FindCase() -> list[int]:
-        match rSensor: # MAY NEED TO CHANGE THIS
+        match rSensor: 
     # Base movement, forward and stop
             case [0, 0, 0, 1, 1, 1, 0, 0, 0]:
                 return [1, 50, 1, 50]

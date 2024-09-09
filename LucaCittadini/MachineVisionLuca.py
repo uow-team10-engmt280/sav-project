@@ -5,7 +5,7 @@ import numpy as np
 # TODO Need to make it capable of video stream
 
 def MV() -> list[int]:
-    image = cv.imread("c:/Users/LucaC/OneDrive/Documents/Visual Studio Code/University/Python/ENGMT280/picCamTow (5).png")
+    image = cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (20).png")
 
     def rescaleFrame(frame, scale=0.50):
         width = int(frame.shape[1] * scale)
@@ -170,6 +170,10 @@ def MV() -> list[int]:
     cv.destroyAllWindows()
     return direction
 
+try:
+    MV()
+except:
+    print('Failed to run programme')
 # Image part still needs some fixing, but could definitely get a good mark
 
 #=============================================================================

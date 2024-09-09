@@ -1,10 +1,7 @@
-
-# TODO don't forget what classes are, they consist of attributes and methods, not just lines of code to be executed like "print()"
-
 import RPi.GPIO as GPIO # type: ignore 
 import time
 from typing import Protocol
-from MachineVisionMain import MV 
+from MachineVisionLuca import MV 
 from FindCase import FindCase
 from ServoFunctions import setLargeServo, setSmallServo
 
@@ -24,25 +21,19 @@ class SAV:
         global forkFlag
         global pickDropFlag
         global mergeFlag
-        global turnOne
-        global turnTwo
-        global pickUpSide
-        global dropOffSide
-        global motorInstruc
         global pwmA
         global pwmB
         global pwmSmall
         global pwmLarge
-        global startTime
 
         phaseA: int = 6
         enableA: int = 13
         phaseB: int = 19
         enableB: int = 26
-        smallServoCtrl: int = 5
-        largeServoCtrl: int = 0
         rangeSense: int = 2
         movPhase: str = 'phaseFork'
+        smallServoCtrl: int = 5
+        largeServoCtrl: int = 0
         forkFlag: bool = False
         pickDropFlag: bool = False
         mergeFlag: bool = False
@@ -71,7 +62,7 @@ class SAV:
         pwmSmall.start(0) 
         pwmLarge.start(0)
 
-    def switch(self, sav) -> None:
+    def switch(self) -> None:
         self.state.switch(self)
         
 class IDLE:
@@ -91,7 +82,11 @@ class IDLE:
 class LISTENING:
 
     def findPath() -> None:
-        TParray: list[bool] = MV() 
+        global turnOne
+        global turnTwo
+        global pickUpSide
+        global dropOffSide
+        TParray: list[bool] = MV()
         turnOne: bool = TParray(0)
         pickUpSide: bool = TParray(1)
         turnTwo: bool = TParray(2)
@@ -106,6 +101,7 @@ class LISTENING:
                     print('Invalid, try again. \n')
 
     def startStopWatch() -> None: # Move into userWait() method?
+        global startTime
         startTime: float = time.time()
 
     def switch(self, sav) -> None:
@@ -116,6 +112,7 @@ class MOVING:
 
     def driving() -> None:
         while(True): 
+            global rangeOut
             rangeOut = bool(GPIO.input(rangeSense))
             if movPhase == 'phasePickDrop' | 'phasePark': # We are only listening to the range sensor if we are in these phases
                 if rangeOut == True:
@@ -151,15 +148,16 @@ class MOVING:
                 print('Changing state to PARKING')
 
 class PICKUP:
+    movPhase: str = 'phaseMerge'
+    pickDropFlag: bool = True 
     # Potentially fix position (to ensure it picks up in right place)
     #   - Check reflect sensor to see if we are in middle of the track
     #   - If it doesn't return [0, 0, 0, 1, 1, 1, 0, 0, 0] then fix position
-    movPhase: str = 'phaseMerge'
     def pickUpLegoMan() -> None:
-        setSmallServo(120) # These may need to switch
+        setSmallServo(120) # These may need to switch FIXME
         time.sleep(2)
         if pickUpSide == False:
-            setLargeServo(180) # These may need to switch
+            setLargeServo(180) # These may need to switch FIXME
         else:
             setLargeServo(0)
         time.sleep(2)
@@ -195,12 +193,13 @@ class PARKING:
 
     def parkSAV() -> None:
         ...
-    # NOTE not sure if any other tasks need to be complete during this state
+
     def switch(self, sav) -> None:
         sav.state = COMPLETE()
         print('Changing state to COMPLETE')
 
 class COMPLETE:
+
     def endStopWatch() -> None:
         endTime: float = time.time()
         raceTime: float = endTime - startTime
