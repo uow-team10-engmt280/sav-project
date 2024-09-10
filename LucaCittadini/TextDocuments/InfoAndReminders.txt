@@ -39,7 +39,7 @@ Here are the GPIO pins
 
 
 REMINDERS/WHAT NEEDS DOING:
-1. Could create seperate functions to control the servos in another file to just import and call them.
+1. Could create seperate functions to control the servos in another file to just import and call them. DONE
 
 2. Don't forget to remove some comments like "# type: ignore", this is used to ignore problems that 
 we know aren't problems, but should remove later just incase there are problems.
