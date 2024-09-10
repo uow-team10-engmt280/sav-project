@@ -157,9 +157,6 @@ class PICKUP:
             ... # This will stay a pass because we're fine
         else:
             ... # This will call some function that makes the SAV move to fix it's position
-    # Potentially fix position (to ensure it picks up in right place)
-    #   - Check reflect sensor to see if we are in middle of the track
-    #   - If it doesn't return [0, 0, 0, 1, 1, 1, 0, 0, 0] then fix position
     def pickUpLegoMan() -> None:
         setSmallServo(120) # These may need to switch FIXME
         time.sleep(2)
