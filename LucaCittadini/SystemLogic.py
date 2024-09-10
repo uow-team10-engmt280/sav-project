@@ -68,7 +68,7 @@ class SAV:
         
 class IDLE:
 
-    def userWait() -> None: 
+    def userWait(self) -> None: 
         while(True):        
             match input('Type "Start" to begin program when you\'re ready: \n').lower():
                 case 's' | 'start':
@@ -82,7 +82,7 @@ class IDLE:
 
 class LISTENING:
 
-    def findPath() -> None:
+    def findPath(self) -> None:
         global turnOne
         global turnTwo
         global pickUpSide
@@ -93,7 +93,7 @@ class LISTENING:
         turnTwo: bool = TParray(2)
         dropOffSide: bool = TParray(3)
 
-    def userWait() -> None:
+    def userWait(self) -> None:
         while(True):
             match input('Decisions received, type "Next" to start race: \n').lower():
                 case 'n' | 'next':
@@ -101,7 +101,7 @@ class LISTENING:
                 case _:
                     print('Invalid, try again. \n')
 
-    def startStopWatch() -> None: # Move into userWait() method?
+    def startStopWatch(self) -> None: # Move into userWait() method?
         global startTime
         startTime: float = time.time()
 
@@ -111,7 +111,7 @@ class LISTENING:
 
 class MOVING:
 
-    def driving() -> None:
+    def driving(self) -> None:
         while(True): 
             global rangeOut
             rangeOut = bool(GPIO.input(rangeSense))
@@ -152,12 +152,12 @@ class PICKUP:
     movPhase: str = 'phaseMerge'
     pickDropFlag: bool = True 
 
-    def checkPos() -> None:
+    def checkPos(self) -> None:
         if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
             ... # This will stay a pass because we're fine
         else:
             ... # This will call some function that makes the SAV move to fix it's position
-    def pickUpLegoMan() -> None:
+    def pickUpLegoMan(self) -> None:
         setSmallServo(120) # These may need to switch FIXME
         time.sleep(2)
         if pickUpSide == False:
@@ -176,7 +176,7 @@ class PICKUP:
 
 class DROPOFF:
     movPhase: str = 'phaseMerge'
-    def dropOffLegoMan() -> None:
+    def dropOffLegoMan(self) -> None:
         if dropOffSide == False:
             setLargeServo(180)
         else: 
@@ -195,7 +195,7 @@ class DROPOFF:
 
 class PARKING:
 
-    def parkSAV() -> None:
+    def parkSAV(self) -> None:
         ...
 
     def switch(self, sav) -> None:
@@ -204,14 +204,14 @@ class PARKING:
 
 class COMPLETE:
 
-    def endStopWatch() -> None:
+    def endStopWatch(self) -> None:
         endTime: float = time.time()
         raceTime: float = endTime - startTime
         minutes: int = raceTime//60
         seconds: float = raceTime%60
         print('You took %d minutes and %f seconds to complete the track. ' % (minutes, seconds))
 
-    def clean() -> None:
+    def clean(self) -> None:
         GPIO.cleanup()
     
     def switch(self, sav) -> None:

@@ -4,7 +4,7 @@ import numpy as np
 
 # TODO Need to make it capable of video stream
 
-def MV() -> list[int]:
+def MV() -> list[bool]:
     image = cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (20).png")
 
     def rescaleFrame(frame, scale=0.50):
@@ -15,7 +15,7 @@ def MV() -> list[int]:
 
         return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
 
-    def nothing():
+    def nothing() -> None:
         pass
 
     rimage = rescaleFrame(image)
