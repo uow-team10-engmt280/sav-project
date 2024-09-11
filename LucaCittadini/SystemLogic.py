@@ -209,7 +209,7 @@ class COMPLETE:
         raceTime: float = endTime - startTime
         minutes: int = raceTime//60
         seconds: float = raceTime%60
-        print('You took %d minutes and %f seconds to complete the track. ' % (minutes, seconds))
+        print(f'You took {minutes} minutes and {seconds} seconds to complete the track. ')
 
     def clean(self) -> None:
         GPIO.cleanup()
