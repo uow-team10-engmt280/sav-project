@@ -11,6 +11,7 @@ class State(Protocol):
         ...
 
 class SAV:
+    
     def __init__(self):
         self.state = IDLE()
         global phaseA
@@ -115,7 +116,7 @@ class MOVING:
         while(True): 
             global rangeOut
             rangeOut = bool(GPIO.input(rangeSense))
-            if movPhase == 'phasePickDrop' | 'phasePark': # We are only listening to the range sensor if we are in these phases
+            if movPhase == 'phasePickDrop' | 'phasePark': 
                 if rangeOut == True:
                     GPIO.output(phaseA, 0)
                     pwmA.ChangeDutyCycle(0)
@@ -175,6 +176,7 @@ class PICKUP:
         print('Changing state to MOVING')
 
 class DROPOFF:
+
     movPhase: str = 'phaseMerge'
     def dropOffLegoMan(self) -> None:
         if dropOffSide == False:
@@ -195,7 +197,7 @@ class DROPOFF:
 
 class PARKING:
 
-    def parkSAV(self) -> None:
+    def parkSAV(self) -> None: # TODO
         ...
 
     def switch(self, sav) -> None:
