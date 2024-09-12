@@ -1,39 +1,39 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V2.4.6
-# Changelog: add docstrings for the LineSensor class
-# Still to fix: create calibration method to get threshold
-# Date: 12/09/2024
-# Time: 23:33:51
+# ENGMT280 QTRX-HD-09RC interfacing module V2.5.0
+# Changelog: refactor calibrate() method; add docstrings for LineSensor class methods
+# Still to fix: create testing programs
+# Date -> 13/09/2024
+# Time -> 00:17
 import time
 import RPi.GPIO as GPIO
 
 
 class LineSensor:
-    '''
+    """
         A class that represents the Pololu QTRX-HD-09RC reflectance sensor.
         ref: https://www.pololu.com/product/4109
         ...
         Attributes
         ----------
         sensor_pins : list[int]
-            the BCM numberinng of the pins connected to the line sensor
+            the BCM numbering of the pins connected to the line sensor.
         max_value : float
-            maximum possible discharge time of a single sensor
+            maximum possible discharge time of a single sensor.
         threshold : float
-            the value that seperates light and dark discharge times
+            the value that seperates light and dark discharge times.
 
         Methods
         -------
         emitters_off(wait=True):
-            turns the IR LEDs off
+            turns the IR LEDs off.
         emitters_on(wait=True):
-            turns the IR LEDs on
+            turns the IR LEDs on.
         read():
             main method used to read the line sensors outputted discharge times and 
-            outputs the values to the user
+            outputs the values to the user.
         cleanup():
-            cleans the GPIO pin allocations
-    '''
+            cleans the GPIO pin allocations.
+    """
 
     def __init__(self, ctrl_pin, sensor_pins, max_value, threshold=None):
         self.ctrl_pin = ctrl_pin  # control pin
@@ -41,17 +41,11 @@ class LineSensor:
         self._sensor_count = len(sensor_pins)  # amount of sensors
         # this is the maximum possible discharge time of the RC circuit
         self.max_value = max_value
-
         self._calibration_on = {'maximum': [0] * self._sensor_count, 'minimum': [
             self.max_value] * self._sensor_count, 'initialized': False}
 
         # create threshold to seperate light and dark values
-        if threshold is None:
-            # create value if not provided
-            self.threshold = max_value / 2
-        else:
-            # use user input value
-            self.threshold = threshold
+        self.threshold = threshold if threshold is not None else max_value / 2
 
         # set pin naming convention
         GPIO.setmode(GPIO.BCM)
@@ -76,6 +70,21 @@ class LineSensor:
             time.sleep(0.0012)
 
     def read(self):
+        """
+            Reads the discharge times of the sensor and outputs the processed value 
+            in single-digit binary values where light => 0 and dark => 1.
+            ...
+            Parameters
+            ----------
+            None
+
+            Returns
+            -------
+            binary_array : list[int]
+                a list of single-digit binary numbers representing the reflectance 
+                levels sensed, it is returned with the same length as the amount of
+                sensor pins used.
+        """
         while True:
             sensor_values = [self.max_value] * self._sensor_count
             read_flag = [False] * self._sensor_count
@@ -84,8 +93,8 @@ class LineSensor:
             # self.emitters_on()
 
             # drive data pins high
-            for i in range(self._sensor_count):
-                GPIO.output(self.sensor_pins[i], GPIO.HIGH)
+            for pin in range(self._sensor_count):
+                GPIO.output(self.sensor_pins[pin], GPIO.HIGH)
 
             # wait for 10 microsecs
             time.sleep(0.00001)  # 10 microseconds
@@ -94,8 +103,8 @@ class LineSensor:
             start_time = time.time()
 
             # set data I/O lines to input
-            for i in range(self._sensor_count):
-                GPIO.setup(self.sensor_pins[i], GPIO.IN)
+            for pin in range(self._sensor_count):
+                GPIO.setup(self.sensor_pins[pin], GPIO.IN)
 
             # measure the discharge time
             while True:
@@ -122,16 +131,34 @@ class LineSensor:
 
             return binary_array  # outputs discharge time in microsecs
 
-    def calibrate(self):
-        sensor_values = self.read()
-        for i in range(self._sensor_count):
-            self._calibration_on['maximum'][i] = max(
-                self._calibration_on['maximum'][i], sensor_values[i])
-            self._calibration_on['minimum'][i] = min(
-                self._calibration_on['minimum'][i], sensor_values[i])
+    def calibrate(self, num_samples=10):
+        for _ in range(num_samples):
+            sensor_values = self.read()
+
+            for i in range(self._sensor_count):
+                if sensor_values[i] > self._calibration_on['maximum'][i]:
+                    self._calibration_on['maximum'][i] = sensor_values[i]
+
+                if sensor_values[i] < self._calibration_on['minimum'][i]:
+                    self._calibration_on['minimum'][i] = sensor_values[i]
 
     def readCalibrated(self):
+        """
+        Reads the sensor values and scales them based on the previously 
+        recorded calibration data (maximum and minimum discharge times).
+
+        Returns
+        -------
+        calibrated_values : list[int]
+            A list of calibrated sensor values, scaled from 0 (minimum) to 
+            1000 (maximum).
+        """
+        if not self._calibration_on['initialized']:
+            raise ValueError(
+                "Calibration has not been completed, run LineSensor.calibrate().")
+
         sensor_values = self.read()
+
         for i in range(self._sensor_count):
             cal_min = self._calibration_on['minimum'][i]
             cal_max = self._calibration_on['maximum'][i]
