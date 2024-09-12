@@ -1,12 +1,40 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V2.4.4
-# Changelog: fix no value read method error
+# ENGMT280 QTRX-HD-09RC interfacing module V2.4.6
+# Changelog: add docstrings for the LineSensor class
 # Still to fix: create calibration method to get threshold
-import RPi.GPIO as GPIO
+# Date: 12/09/2024
+# Time: 23:33:51
 import time
+import RPi.GPIO as GPIO
 
 
 class LineSensor:
+    '''
+        A class that represents the Pololu QTRX-HD-09RC reflectance sensor.
+        ref: https://www.pololu.com/product/4109
+        ...
+        Attributes
+        ----------
+        sensor_pins : list[int]
+            the BCM numberinng of the pins connected to the line sensor
+        max_value : float
+            maximum possible discharge time of a single sensor
+        threshold : float
+            the value that seperates light and dark discharge times
+
+        Methods
+        -------
+        emitters_off(wait=True):
+            turns the IR LEDs off
+        emitters_on(wait=True):
+            turns the IR LEDs on
+        read():
+            main method used to read the line sensors outputted discharge times and 
+            outputs the values to the user
+        cleanup():
+            cleans the GPIO pin allocations
+    '''
+
     def __init__(self, ctrl_pin, sensor_pins, max_value, threshold=None):
         self.ctrl_pin = ctrl_pin  # control pin
         self.sensor_pins = sensor_pins  # array of gpio pins connected to sensor
