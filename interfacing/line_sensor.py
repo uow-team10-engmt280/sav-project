@@ -1,6 +1,6 @@
 # Author: Taro Bense
-# ENGMT280 QTRX-HD-09RC interfacing module V2.4.3
-# Changelog: fix no value read error
+# ENGMT280 QTRX-HD-09RC interfacing module V2.4.4
+# Changelog: fix no value read method error
 # Still to fix: create calibration method to get threshold
 import RPi.GPIO as GPIO
 import time
@@ -14,10 +14,8 @@ class LineSensor:
         # this is the maximum possible discharge time of the RC circuit
         self.max_value = max_value
 
-        self._calibration_on = {'maximum': [],
-                                'minimum': [], 'initialized': False}
-        self._calibration_off = {'maximum': [],
-                                 'minimum': [], 'initialized': False}
+        self._calibration_on = {'maximum': [0] * self._sensor_count, 'minimum': [
+            self.max_value] * self._sensor_count, 'initialized': False}
 
         # create threshold to seperate light and dark values
         if threshold is None:
@@ -52,16 +50,17 @@ class LineSensor:
     def read(self):
         while True:
             sensor_values = [self.max_value] * self._sensor_count
+            read_flag = [False] * self._sensor_count
 
             # turn IR LEDs on
-            self.emitters_on()
+            # self.emitters_on()
 
             # drive data pins high
             for i in range(self._sensor_count):
                 GPIO.output(self.sensor_pins[i], GPIO.HIGH)
 
             # wait for 10 microsecs
-            time.sleep(10 * 10E6)  # 10 microseconds
+            time.sleep(0.00001)  # 10 microseconds
 
             # start timing
             start_time = time.time()
@@ -80,13 +79,15 @@ class LineSensor:
                     break  # Stop if time exceeds the maximum threshold
 
                 for i in range(self._sensor_count):
-                    if GPIO.input(self.sensor_pins[i]) == GPIO.LOW and elapsed_time < sensor_values[i]:
-                        pass
+                    if not read_flag[i]:
+                        if GPIO.input(self.sensor_pins[i]) == GPIO.LOW and elapsed_time < sensor_values[i]:
+                            sensor_values[i] = elapsed_time
+                            read_flag[i] = True
 
-                    sensor_values[i] = elapsed_time
-
+                if all(read_flag):
+                    break
             # turn IR LEDs off
-            self.emitters_off()
+            # self.emitters_off()
 
             binary_array = [(0 if time_val > self.threshold else 1)
                             for time_val in sensor_values]
