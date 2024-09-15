@@ -5,14 +5,11 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # Define the GPIO pins used for the 9 sensors
-sensor_pins = [23, 20, 24, 16, 25, 12, 8, 1, 7]  # Example GPIO pins for 9 sensors
+sensor_pins = [17, 18, 27, 22, 23, 24, 25, 5, 6]  # Example GPIO pins for 9 sensors
 
-# Initialize the binary array to store the sensor values
-sensor_values = [0] * 9  # 9-bit binary array to hold sensor readings (1 or 0)
-
-# Function to read sensor values
+# Function to read sensor values and return as a binary array
 def read_sensors():
-    global sensor_values
+    sensor_values = [0] * 9  # Initialize a 9-bit binary array
     for i in range(9):
         GPIO.setup(sensor_pins[i], GPIO.OUT)
         GPIO.output(sensor_pins[i], GPIO.LOW)
@@ -30,18 +27,11 @@ def read_sensors():
         # Threshold value to detect a line (adjust based on sensor testing)
         threshold = 0.0005  # You may need to tweak this threshold value
         
-        # If the elapsed time is below the threshold, it's detecting a line (black), otherwise it's detecting white
+        # If the elapsed time is below the threshold, it's detecting a line (black), otherwise white
         sensor_values[i] = 1 if elapsed_time < threshold else 0
+    
+    return sensor_values  # Return the binary sensor array
 
-# Main loop
-try:
-    while True:
-        read_sensors()
-        print(f'Sensor values: {sensor_values}')  # Print the binary array (1 for line, 0 for no line)
-        time.sleep(0.1)  # Small delay before reading the sensors again
-
-except KeyboardInterrupt:
-    pass
-
-finally:
-    GPIO.cleanup()  # Clean up GPIO on exit
+# Clean up GPIO after usage
+def cleanup():
+    GPIO.cleanup()
