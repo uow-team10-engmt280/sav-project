@@ -5,7 +5,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # Define the GPIO pins used for the 9 sensors
-sensor_pins = [17, 18, 27, 22, 23, 24, 25, 5, 6]  # Example GPIO pins for 9 sensors
+sensor_pins = [23, 20, 24, 16, 25, 12, 8, 1, 7]  # Example GPIO pins for 9 sensors
 
 # Function to read sensor values and return as a binary array
 def read_sensors():
