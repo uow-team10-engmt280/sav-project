@@ -5,7 +5,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # Define the GPIO pins used for the 9 sensors
-sensor_pins = [23, 20, 24, 16, 25, 12, 8, 1, 7]  # Example GPIO pins for 9 sensors
+sensor_pins = [17, 18, 27, 22, 23, 24, 25, 5, 6]  # Example GPIO pins for 9 sensors
 
 # Initialize the binary array to store the sensor values
 sensor_values = [0] * 9  # 9-bit binary array to hold sensor readings (1 or 0)
@@ -27,14 +27,17 @@ def read_sensors():
             pass
         elapsed_time = time.time() - start_time
         
-        # If elapsed time is small, object is detected, otherwise no object
-        sensor_values[i] = 1 if elapsed_time < 0.0005 else 0
+        # Threshold value to detect a line (adjust based on sensor testing)
+        threshold = 0.0005  # You may need to tweak this threshold value
+        
+        # If the elapsed time is below the threshold, it's detecting a line (black), otherwise it's detecting white
+        sensor_values[i] = 1 if elapsed_time < threshold else 0
 
 # Main loop
 try:
     while True:
         read_sensors()
-        print(f'Sensor values: {sensor_values}')  # Print the binary array
+        print(f'Sensor values: {sensor_values}')  # Print the binary array (1 for line, 0 for no line)
         time.sleep(0.1)  # Small delay before reading the sensors again
 
 except KeyboardInterrupt:
