@@ -5,7 +5,7 @@ import numpy as np
 # TODO Need to make it capable of video stream
 
 def MV() -> list[bool]:
-    image = cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (20).png")
+    image = cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (22).png")
 
     def rescaleFrame(frame, scale=0.50):
         width = int(frame.shape[1] * scale)
@@ -32,6 +32,7 @@ def MV() -> list[bool]:
     cv.createTrackbar('Find G', 'Controls', 0, 1, nothing)
     cv.createTrackbar('Find R', 'Controls', 0, 1, nothing)
     cv.createTrackbar('Find Y', 'Controls', 0, 1, nothing)
+    cv.createTrackbar('Find Special R', 'Controls', 0, 1, nothing)
 
 
     cv.createTrackbar('Hue lower','Controls', 0, 180, nothing)
@@ -45,14 +46,15 @@ def MV() -> list[bool]:
         # s = cv.getTrackbarPos('Switch','Controls')
         testH = cv.getTrackbarPos('H', 'Controls')
         testW = cv.getTrackbarPos('W', 'Controls')
-        b = cv.getTrackbarPos('Find B','Controls')
-        g = cv.getTrackbarPos('Find G','Controls')
-        r = cv.getTrackbarPos('Find R','Controls')
-        y = cv.getTrackbarPos('Find Y','Controls')
+        b = cv.getTrackbarPos('Find B', 'Controls')
+        g = cv.getTrackbarPos('Find G', 'Controls')
+        r = cv.getTrackbarPos('Find R', 'Controls')
+        y = cv.getTrackbarPos('Find Y', 'Controls')
+        sc = cv.getTrackbarPos('Find Special R', 'Controls')
 
         if b == 1:
             cv.setTrackbarPos('Hue lower','Controls', 31)
-            cv.setTrackbarPos('Sat lower','Controls', 219)
+            cv.setTrackbarPos('Sat lower','Controls', 250)
             cv.setTrackbarPos('Val lower','Controls', 87)
             cv.setTrackbarPos('Hue higher','Controls', 180)
             cv.setTrackbarPos('Sat higher','Controls', 255)
@@ -75,13 +77,21 @@ def MV() -> list[bool]:
             cv.setTrackbarPos('Val higher','Controls', 255)
             cv.setTrackbarPos('Find R','Controls', 0)
         elif y == 1: 
-            cv.setTrackbarPos('Hue lower','Controls', 24)
-            cv.setTrackbarPos('Sat lower','Controls', 65)
-            cv.setTrackbarPos('Val lower','Controls', 145)
-            cv.setTrackbarPos('Hue higher','Controls', 57)
-            cv.setTrackbarPos('Sat higher','Controls', 255)
-            cv.setTrackbarPos('Val higher','Controls', 230)
-            cv.setTrackbarPos('Find Y','Controls', 0)
+            cv.setTrackbarPos('Hue lower', 'Controls', 15)
+            cv.setTrackbarPos('Sat lower', 'Controls', 65)
+            cv.setTrackbarPos('Val lower', 'Controls', 145)
+            cv.setTrackbarPos('Hue higher', 'Controls', 57)
+            cv.setTrackbarPos('Sat higher', 'Controls', 255)
+            cv.setTrackbarPos('Val higher', 'Controls', 230)
+            cv.setTrackbarPos('Find Y', 'Controls', 0)
+        elif sc == 1:
+            cv.setTrackbarPos('Hue lower', 'Controls', 0)
+            cv.setTrackbarPos('Sat lower', 'Controls', 210)
+            cv.setTrackbarPos('Val lower', 'Controls', 50)
+            cv.setTrackbarPos('Hue higher', 'Controls', 180)
+            cv.setTrackbarPos('Sat higher', 'Controls', 250)
+            cv.setTrackbarPos('Val higher', 'Controls', 255)
+            cv.setTrackbarPos('Find Special R', 'Controls', 0)
         else:
             hue_l = cv.getTrackbarPos('Hue lower','Controls')
             sat_l = cv.getTrackbarPos('Sat lower','Controls')
@@ -92,16 +102,14 @@ def MV() -> list[bool]:
 
         cv.rectangle(S_mask, (int(rimage.shape[1]), int(rimage.shape[0])), (0,0), (255, 255, 255), -1)
         cv.rectangle(S_mask, (testW, testH), (0,0), (0, 0, 0), -1)
-        # cv.imshow('Sliding mask', S_mask)
 
         # Blurs the video for better edge detection
         blurred = cv.bilateralFilter(rimage, 5, 30, 50)
         # Coverts to HSV colour space
         hsv = cv.cvtColor(blurred, cv.COLOR_BGR2HSV)
-        cv.imshow('HSV', hsv)
+        # cv.imshow('HSV', hsv)
         # Sets the HSV threshold values (controlled by sliders)
         hsvThreshold = cv.inRange(hsv, (hue_l, sat_l, val_l), (hue_h, sat_h, val_h)) 
-        # Finds the contours
         contours, hierarchy = cv.findContours(hsvThreshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
         # Draws the contours onto out bitmap mask
         cv.drawContours(hsvThreshold, contours, -1, (0, 255, 0), 1)
@@ -160,7 +168,7 @@ def MV() -> list[bool]:
         print(direction)
 
         # cv.imshow('Contoured Image', hsvThreshold)
-        cv.imshow('Masked Image', maskedImage)
+        # cv.imshow('Masked Image', maskedImage)
         cv.imshow('Final Image', FinalImage)
 
         if cv.waitKey(20) & 0xFF==ord('e'):
@@ -170,28 +178,30 @@ def MV() -> list[bool]:
     cv.destroyAllWindows()
     return direction
 
-try:
-    MV()
-except:
-    print('Failed to run programme')
+
+MV()
+# try:
+#     MV()
+# except:
+#     print('Failed to run programme')
 # Image part still needs some fixing, but could definitely get a good mark
 
 #=============================================================================
 # Reading the camera feed
 # facecam = cv.VideoCapture(0)
 
-# def nothing(x):
+# def nothing()(x):
 #     pass
 
 # img = np.zeros((300,512,3), np.uint8)
 # cv.namedWindow('Masked Image')
 
-# cv.createTrackbar('Hue_l','Masked Image', 0, 180, nothing)
-# cv.createTrackbar('Sat_l','Masked Image', 0, 255, nothing)
-# cv.createTrackbar('Val_l','Masked Image', 0, 255, nothing)
-# cv.createTrackbar('Hue_h','Masked Image', 0, 180, nothing)
-# cv.createTrackbar('Sat_h','Masked Image', 0, 255, nothing)
-# cv.createTrackbar('Val_h','Masked Image', 0, 255, nothing)
+# cv.createTrackbar('Hue_l','Masked Image', 0, 180, nothing())
+# cv.createTrackbar('Sat_l','Masked Image', 0, 255, nothing())
+# cv.createTrackbar('Val_l','Masked Image', 0, 255, nothing())
+# cv.createTrackbar('Hue_h','Masked Image', 0, 180, nothing())
+# cv.createTrackbar('Sat_h','Masked Image', 0, 255, nothing())
+# cv.createTrackbar('Val_h','Masked Image', 0, 255, nothing())
 
 # while True:
 #     # Gets the position of the slider

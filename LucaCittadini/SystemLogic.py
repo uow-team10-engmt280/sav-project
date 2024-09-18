@@ -14,6 +14,7 @@ class SAV:
     
     def __init__(self):
         self.state = IDLE()
+        # FIXME might have to move "global"s out of method
         global phaseA
         global enableA
         global phaseB
@@ -57,21 +58,21 @@ class SAV:
 
         pwmA = GPIO.PWM(enableA, 1000)
         pwmB = GPIO.PWM(enableB, 1000)
-        pwmSmall = GPIO.PWM(smallServoCtrl, 50) 
-        pwmLarge = GPIO.PWM(smallServoCtrl, 50)
+        pwmSmall = GPIO.PWM(smallServoCtrl, 50) # FIXME
+        pwmLarge = GPIO.PWM(largeServoCtrl, 50) # FIXME
         pwmA.start(0)
         pwmB.start(0)
-        pwmSmall.start(0) 
-        pwmLarge.start(0)
+        pwmSmall.start(0) # FIXME
+        pwmLarge.start(0) # FIXME
 
     def switch(self) -> None:
-        self.state.switch(self)
+        self.state.switch(self) # FIXME What does this do exactly?
         
 class IDLE:
 
     def userWait(self) -> None: 
         while(True):        
-            match input('Type "Start" to begin program when you\'re ready: \n').lower():
+            match input('Type "Start" to begin programme when you\'re ready: \n').lower():
                 case 's' | 'start':
                     break
                 case _:
@@ -155,14 +156,14 @@ class PICKUP:
 
     def checkPos(self) -> None:
         if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
-            ... # This will stay a pass because we're fine
+            ... 
         else:
             ... # This will call some function that makes the SAV move to fix it's position
     def pickUpLegoMan(self) -> None:
-        setSmallServo(120) # These may need to switch FIXME
+        setSmallServo(120)
         time.sleep(2)
         if pickUpSide == False:
-            setLargeServo(180) # These may need to switch FIXME
+            setLargeServo(180) 
         else:
             setLargeServo(0)
         time.sleep(2)
@@ -223,6 +224,9 @@ class COMPLETE:
 
 def main() -> None:
     sav = SAV()
+    sav.__init__()
+    sav.switch() # Not sure about this, is it needed?
+
     sav.userWait()
     sav.switch() # Move to LISTENING state
 
