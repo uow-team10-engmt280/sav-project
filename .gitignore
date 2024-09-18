@@ -1,2 +1,3 @@
 # ignore test file
 interfacing/test_linesensor.py
+*.venv*
