@@ -34,7 +34,6 @@ def MV() -> list[bool]:
     cv.createTrackbar('Find Y', 'Controls', 0, 1, nothing)
     cv.createTrackbar('Find Special R', 'Controls', 0, 1, nothing)
 
-
     cv.createTrackbar('Hue lower','Controls', 0, 180, nothing)
     cv.createTrackbar('Sat lower','Controls', 0, 255, nothing)
     cv.createTrackbar('Val lower','Controls', 0, 255, nothing)
@@ -43,7 +42,6 @@ def MV() -> list[bool]:
     cv.createTrackbar('Val higher','Controls', 255, 255, nothing)
 
     while(True):
-        # s = cv.getTrackbarPos('Switch','Controls')
         testH = cv.getTrackbarPos('H', 'Controls')
         testW = cv.getTrackbarPos('W', 'Controls')
         b = cv.getTrackbarPos('Find B', 'Controls')
@@ -107,9 +105,9 @@ def MV() -> list[bool]:
         blurred = cv.bilateralFilter(rimage, 5, 30, 50)
         # Coverts to HSV colour space
         hsv = cv.cvtColor(blurred, cv.COLOR_BGR2HSV)
-        # cv.imshow('HSV', hsv)
         # Sets the HSV threshold values (controlled by sliders)
         hsvThreshold = cv.inRange(hsv, (hue_l, sat_l, val_l), (hue_h, sat_h, val_h)) 
+        
         contours, hierarchy = cv.findContours(hsvThreshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
         # Draws the contours onto out bitmap mask
         cv.drawContours(hsvThreshold, contours, -1, (0, 255, 0), 1)
@@ -132,9 +130,6 @@ def MV() -> list[bool]:
                 centroid_y = y + h/2
                 cv.putText(FinalImage, "x= " + str(centroid_x) + " y= " + str(centroid_y), 
                         (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, 0.25, (0, 255, 0), 1)
-        # print(numBoxes)
-        # print(boxes)
-        # print(type(boxes))
         direction1 = []
         direction2 = []
 

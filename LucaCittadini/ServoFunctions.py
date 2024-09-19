@@ -1,6 +1,6 @@
 from time import sleep, time
-# from SystemLogic import pwmSmall, pwmLarge, smallServoCtrl, largeServoCtrl
-# import RPi.GPIO as GPIO # type: ignore
+from SystemLogic import pwmSmall, pwmLarge, smallServoCtrl, largeServoCtrl
+import RPi.GPIO as GPIO # type: ignore
 
 # NOTE Small servo angles go between 0 and 120 degrees, Large servo angles from 0 to 180 degrees
 # The small servo pulse widths go from 900µs to 2100µs (0.9ms, 2.1ms)
@@ -12,10 +12,9 @@ from time import sleep, time
 test = 0
 startTime = time()
 while test < 50:
-    # GPIO.output(smallServoCtrl, GPIO.LOW)
-    test += 1
+    GPIO.output(smallServoCtrl, GPIO.LOW)
     sleep(1/104.5)
-    # GPIO.output(smallServoCtrl, GPIO.HIGH)
+    GPIO.output(smallServoCtrl, GPIO.HIGH)
     sleep(1/104.5)
 endTime = time()
 

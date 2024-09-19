@@ -5,6 +5,7 @@ from typing import Protocol
 from MachineVisionLuca import MV 
 from FindCase import FindCase
 from ServoFunctions import setLargeServo, setSmallServo
+from FixPosition import fixPosition
 
 class State(Protocol):
     def switch(self, sav) -> None:
@@ -154,11 +155,11 @@ class PICKUP:
     movPhase: str = 'phaseMerge'
     pickDropFlag: bool = True 
 
-    def checkPos(self) -> None:
-        if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
-            ... 
-        else:
-            ... # This will call some function that makes the SAV move to fix it's position
+    # def checkPos(self) -> None: 
+    #     if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
+    #         ... 
+    #     else:
+    #         fixPosition() # This will call some function that makes the SAV move to fix it's position
     def pickUpLegoMan(self) -> None:
         setSmallServo(120)
         time.sleep(2)
