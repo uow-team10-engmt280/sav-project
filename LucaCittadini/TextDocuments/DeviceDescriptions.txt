@@ -38,6 +38,7 @@ hook up 9 individual GPIO pins on the Raspberry Pi.
 
 How it should be used:
 
+
 -----------------------------------------------------------------------------------------
 FEETECH FS90 - Micro Servo:
 
@@ -46,7 +47,11 @@ will clamp the Lego figure to pick him up.
 
 How it works:
 
+The micro servo requires a PWM (pulse width modulation) to operate...
 
+How it should be used:
+
+The RPi.GPIO library contains 
 -----------------------------------------------------------------------------------------
 FEETECH FS5106B - Standard Servo:
 
@@ -54,4 +59,8 @@ This device is used to control the arm that moves the gripper at the end of it i
 position to pick up the Lego figure.
 
 How it works:
+
+The standard servo requires a PWM (pulse width modulation) to operate...
+
+How it should be used:
 

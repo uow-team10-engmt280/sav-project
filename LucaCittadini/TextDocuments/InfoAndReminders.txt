@@ -10,7 +10,7 @@ DROPOFF --> MOVING
 MOVING --> PARKING
 PARKING --> COMPLETED
 
-Here are the GPIO pins
+Here are the GPIO pins **FOR HAMMAD'S PCB
 
     For Reflectance Sensor:
         - GPIO23 --> Pin 1 
@@ -44,22 +44,10 @@ REMINDERS/WHAT NEEDS DOING:
 2. Don't forget to remove some comments like "# type: ignore", this is used to ignore problems that 
 we know aren't problems, but should remove later just incase there are problems.
 
-3. EnableA for the motor driver is wired up to GPIO13 on the raspberry Pi, I believe this is PWM capable,
-however EnableB is wired up to GPIO26, which I don't believe is PWM capable. NEED TO CHECK THIS 
-
-4. The small servo is Wired up to GPIO5, the large servo is wired up to GPIO0, I'm not sure but I think 
-that both the servos need PWM signals and I don't think that these GPIO pins are PWM capable. NEED TO CHECK
-THIS
-
-5. We don't have a connection to the motor driver MODE pin. If we get another PCB then we should get add this 
-connection (should also redesign to accommodate the PWMs needed)
-
-6. Maybe add something to the SystemLogic programme (or MachineVisionMain??) to wait until the correct list has
+3. Maybe add something to the SystemLogic programme (or MachineVisionMain??) to wait until the correct list has
 been returned through the function
 
-7. What would "end the programme nicely" entail - (not actually sure if this is a thing or if it just involves
+4. What would "end the programme nicely" entail - (not actually sure if this is a thing or if it just involves
 GPIO cleanup)
 
-8. Make sure that each programme is written so it can just be imported as a function and used like so
-
-9. NEED TO FIX THE "MachineVisionMain.py" PROGRAMME***
+5. NEED TO FIX THE "MachineVisionMain.py" PROGRAMME***

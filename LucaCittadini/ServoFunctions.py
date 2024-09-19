@@ -1,5 +1,5 @@
 from time import sleep, time
-from SystemLogic import pwmSmall, pwmLarge, smallServoCtrl, largeServoCtrl
+# from SystemLogic import pwmSmall, pwmLarge, smallServoCtrl, largeServoCtrl
 import RPi.GPIO as GPIO # type: ignore
 
 # NOTE Small servo angles go between 0 and 120 degrees, Large servo angles from 0 to 180 degrees
@@ -19,13 +19,45 @@ def setLargeServo(angle: int) -> None:
     sleep(2)
     pwmLarge.stop()
 
-smallServoCtrl: int = 5
-largeServoCtrl: int = 0
 
-GPIO.setup(largeServoCtrl, GPIO.OUT) 
-    
+
+def testServos() -> None:
+    global pwmSmall
+    global pwmLarge
+
+    smallServoCtrl: int = 5
+    largeServoCtrl: int = 0
+    GPIO.setup(largeServoCtrl, GPIO.OUT) 
     GPIO.setup(smallServoCtrl, GPIO.OUT) 
-setSmallServo()
+    pwmSmall = GPIO.PWM(smallServoCtrl, 50)
+    pwmLarge = GPIO.PWM(largeServoCtrl, 50) 
+    pwmSmall.start(0) 
+    pwmLarge.start(0) 
+
+    setSmallServo(0)
+    sleep(3)
+    setSmallServo(60)
+    sleep(3)
+    setSmallServo(0)
+    sleep(3)
+    setSmallServo(120)
+    sleep(4)
+    setLargeServo(0)
+    sleep(3)
+    setLargeServo(45)
+    sleep(2)
+    setLargeServo(90)
+    sleep(2)
+    setLargeServo(180)
+    sleep(2)
+    setLargeServo(135)
+    sleep(2)
+    setLargeServo(90)
+
+    print("Testing Complete.")
+
+testServos()
+
 
 # def artiPWM():
 #     while True:

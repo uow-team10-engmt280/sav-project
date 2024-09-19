@@ -129,7 +129,7 @@ class MOVING:
                 else:
                     motorInstruc = FindCase(SOME_ARRAY) # FIXME
                     GPIO.output(phaseA, motorInstruc(0))
-                    pwmA.ChangeDutyCycle(motorInstruc(1)) # TODO
+                    pwmA.ChangeDutyCycle(motorInstruc(1)) 
                     GPIO.output(phaseB, motorInstruc(2))
                     pwmB.ChangeDutyCycle(motorInstruc(3))
             else:
