@@ -6,20 +6,26 @@ import RPi.GPIO as GPIO # type: ignore
 # The small servo pulse widths go from 900µs to 2100µs (0.9ms, 2.1ms)
 # The large servo pulse widths go from 500µs to 2500µs (0.5ms, 2.5ms)
 
-# CODE FOR ARTIFICIAL PWMS:
-# NOTE we want a frequency of 50, that means 50 full cycles in a second, so
 
 def setSmallServo(angle: int) -> None:
     dutyCycle: float = 4.5 + (angle / 120) * 6
     pwmSmall.ChangeDutyCycle(dutyCycle)
     sleep(2)
-    pwmSmall.ChangeDutyCycle(0)
+    pwmSmall.stop()
 
 def setLargeServo(angle: int) -> None:
     dutyCycle: float = 2.5 + (angle / 180) * 10
     pwmLarge.ChangeDutyCycle(dutyCycle)
     sleep(2)
-    pwmLarge.ChangeDutyCycle(0)
+    pwmLarge.stop()
+
+smallServoCtrl: int = 5
+largeServoCtrl: int = 0
+
+GPIO.setup(largeServoCtrl, GPIO.OUT) 
+    
+    GPIO.setup(smallServoCtrl, GPIO.OUT) 
+setSmallServo()
 
 # def artiPWM():
 #     while True:

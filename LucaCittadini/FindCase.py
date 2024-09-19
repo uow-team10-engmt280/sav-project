@@ -2,6 +2,17 @@ from SystemLogic import movPhase, turnOne, pickDropFlag, turnTwo, forkFlag
 
 # TODO Make some kind of sequence detector to recognise when we have gone past the fork or merge
 
+
+
+
+
+# FIXME i return percent, not dutycycle
+
+
+
+
+
+
 def FindCase(rSensor) -> list[int]:
         match rSensor: 
     # Base movement, forward and stop

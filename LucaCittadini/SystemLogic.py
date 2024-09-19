@@ -11,6 +11,7 @@ class State(Protocol):
     def switch(self, sav) -> None:
         ...
 
+
 class SAV:
     
     def __init__(self):
@@ -59,12 +60,12 @@ class SAV:
 
         pwmA = GPIO.PWM(enableA, 1000)
         pwmB = GPIO.PWM(enableB, 1000)
-        pwmSmall = GPIO.PWM(smallServoCtrl, 50) # FIXME
-        pwmLarge = GPIO.PWM(largeServoCtrl, 50) # FIXME
+        pwmSmall = GPIO.PWM(smallServoCtrl, 50)
+        pwmLarge = GPIO.PWM(largeServoCtrl, 50) 
         pwmA.start(0)
         pwmB.start(0)
-        pwmSmall.start(0) # FIXME
-        pwmLarge.start(0) # FIXME
+        pwmSmall.start(0) 
+        pwmLarge.start(0) 
 
     def switch(self) -> None:
         self.state.switch(self) # FIXME What does this do exactly?
@@ -128,7 +129,7 @@ class MOVING:
                 else:
                     motorInstruc = FindCase(SOME_ARRAY) # FIXME
                     GPIO.output(phaseA, motorInstruc(0))
-                    pwmA.ChangeDutyCycle(motorInstruc(1))
+                    pwmA.ChangeDutyCycle(motorInstruc(1)) # TODO
                     GPIO.output(phaseB, motorInstruc(2))
                     pwmB.ChangeDutyCycle(motorInstruc(3))
             else:
@@ -137,7 +138,7 @@ class MOVING:
                 pwmA.ChangeDutyCycle(motorInstruc(1))
                 GPIO.output(phaseB, motorInstruc(2))
                 pwmB.ChangeDutyCycle(motorInstruc(3))
-    
+
     def switch(self, sav) -> None:
         match movPhase:
             case 'phasePickDrop':
