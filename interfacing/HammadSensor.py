@@ -13,14 +13,16 @@ def read_sensors():
     for i in range(9):
         # Configure pin as output to discharge any charge
         GPIO.setup(sensor_pins[i], GPIO.OUT)
-        GPIO.output(sensor_pins[i], GPIO.LOW)
+        GPIO.output(sensor_pins[i], GPIO.HIGH)
         time.sleep(0.00001)  # Brief delay to ensure discharge
         
         # Set pin as input and wait for sensor response
         GPIO.setup(sensor_pins[i], GPIO.IN)
+
+        while(GPIO.input(sensor_pins[i]) == GPIO.LOW):
         
         # Measure the time the sensor pin stays high (indicating detection)
-        start_time = time.time()
+             start_time = time.time()
         while GPIO.input(sensor_pins[i]) == GPIO.HIGH:
             pass
         elapsed_time = time.time() - start_time
