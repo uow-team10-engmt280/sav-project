@@ -3,7 +3,7 @@ import time as t
 
 def getSensorArrayV1() -> None:
     GPIO.setmode(GPIO.BCM)
-    pins: tuple = (23, 20, 24, 16, 25, 12, 8, 1, 7)
+    pins: list = [23, 20, 24, 16, 25, 12, 8, 1, 7]
     firstSensorTime: float = t.time()
     try:
         while(True):
