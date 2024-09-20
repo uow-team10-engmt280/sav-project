@@ -22,10 +22,11 @@ def setLargeServo(angle: int) -> None:
 
 
 def testServos() -> None:
+    GPIO.setmode(GPIO.BCM)
     global pwmSmall
     global pwmLarge
 
-    smallServoCtrl: int = 5
+    smallServoCtrl: int = 5 # FIXME matt's pins
     largeServoCtrl: int = 0
     GPIO.setup(largeServoCtrl, GPIO.OUT) 
     GPIO.setup(smallServoCtrl, GPIO.OUT) 
@@ -53,6 +54,7 @@ def testServos() -> None:
     setLargeServo(135)
     sleep(2)
     setLargeServo(90)
+    GPIO.cleanup()
 
     print("Testing Complete.")
 
