@@ -16,6 +16,7 @@ PARKING --> COMPLETED
 ## Here are the GPIO pins **FOR HAMMAD'S PCB
 
     For Reflectance Sensor:
+
         - GPIO23 --> Pin 1 
         - GPIO20 --> Pin 2
         - GPIO24 --> Pin 3
@@ -25,25 +26,29 @@ PARKING --> COMPLETED
         - GPIO8  --> Pin 7
         - GPIO1  --> Pin 8
         - GPIO7  --> Pin 9
-
         - GPIO18 --> ODD control
         - GPIO21 --> EVEN control
     Note that pin 1 on the reflectance sensor is the one furthest to the left if actually looking at the sensors (IR LED and phototransistor facing you)
 
     To be used as OUTPUT:
+    
         - GPIO6 --> PHASEA (motor driver, ON/OFF)
         - GPIO13 --> ENABLEA (motor driver, speed in %)
         - GPIO19 --> PHASEB (motor driver, ON/OFF)
         - GPIO26 --> ENABLEB (motor driver, speed in %)
         - GPIO5 --> Small servo Control
         - GPIO0 --> Large servo Control
+
     To be used as INPUT:
+
         - GPIO2 --> Range sensor output  
+
 
 
 ## FOR MATT'S PCB:
 
 For Reflectance Sensor:
+
         - GPIO --> Pin 1 
         - GPIO --> Pin 2
         - GPIO --> Pin 3
@@ -53,19 +58,21 @@ For Reflectance Sensor:
         - GPIO  --> Pin 7
         - GPIO  --> Pin 8
         - GPIO  --> Pin 9
-
         - GPIO --> ODD control
         - GPIO --> EVEN control
     Note that pin 1 on the reflectance sensor is the one furthest to the left if actually looking at the sensors (IR LED and phototransistor facing you)
 
     To be used as OUTPUT:
+
         - GPIO --> PHASEA (motor driver, ON/OFF)
         - GPIO --> ENABLEA (motor driver, speed in %)
         - GPIO --> PHASEB (motor driver, ON/OFF)
         - GPIO --> ENABLEB (motor driver, speed in %)
         - GPIO --> Small servo Control
         - GPIO --> Large servo Control
+
     To be used as INPUT:
+
         - GPIO --> Range sensor output  
 
 
