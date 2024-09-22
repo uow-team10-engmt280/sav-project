@@ -4,6 +4,7 @@
 ## INFOMATION:
 
 The sequence of state changes:
+
 IDLE --> LISTENING
 LISTENING --> MOVING
 MOVING --> PICKUP
@@ -31,7 +32,7 @@ PARKING --> COMPLETED
     Note that pin 1 on the reflectance sensor is the one furthest to the left if actually looking at the sensors (IR LED and phototransistor facing you)
 
     To be used as OUTPUT:
-    
+
         - GPIO6 --> PHASEA (motor driver, ON/OFF)
         - GPIO13 --> ENABLEA (motor driver, speed in %)
         - GPIO19 --> PHASEB (motor driver, ON/OFF)
