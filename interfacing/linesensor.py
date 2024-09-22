@@ -123,6 +123,7 @@ class LineSensor:
 
                 if all(read_flag):
                     break
+                
             # turn IR LEDs off
             # self.emitters_off()
 
