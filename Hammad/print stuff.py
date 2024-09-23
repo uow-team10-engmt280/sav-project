@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from machine_vision import panel_directions  # Import the 2-bit array from machine_vision.py
-import line_sensor as ls
+import reflectance_sensor_v5 as ls
 
 class SAV:
     def __init__(self):
@@ -16,23 +16,23 @@ class SAV:
       
     def run(self):
         while True:
-            if ls.read() == line_Sensor_forward:
+            if ls.get_sensor_outputs() == line_Sensor_forward:
                 print("Go Forward")
-            elif ls.read() == line_Sensor_left:
+            elif ls.get_sensor_outputs() == line_Sensor_left:
                 print("Turn Left")
-            elif ls.read() == line_Sensor_right:
+            elif ls.get_sensor_outputs() == line_Sensor_right:
                 print("Turn Right")
-            elif ls.read() == line_Sensor_slight_offtrack_left:
+            elif ls.get_sensor_outputs() == line_Sensor_slight_offtrack_left:
                 print("Offtrack left")
-            elif ls.read() == line_Sensor_slight_offtrack_right:
+            elif ls.get_sensor_outputs() == line_Sensor_slight_offtrack_right:
                 print("Offtrack right")
-            elif ls.read() == line_Sensor_offtrack:
+            elif ls.get_sensor_outputs() == line_Sensor_offtrack:
                 print("Offtrack")
-            elif ls.read() == line_Sensor_left:
+            elif ls.get_sensor_outputs() == line_Sensor_left:
                 print("Turn Left")
-            elif ls.read() == line_Sensor_sharpleft:
+            elif ls.get_sensor_outputs() == line_Sensor_sharpleft:
                 print("Sharp Left")
-            elif ls.read() == line_Sensor_sharpright:
+            elif ls.get_sensor_outputs() == line_Sensor_sharpright:
                 print("Sharp Right")
             
             
