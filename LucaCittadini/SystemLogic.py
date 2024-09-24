@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO # type: ignore 
+from RPi import GPIO # type: ignore 
 import time
 import SOME_ARRAY # type: ignore
 from typing import Protocol
@@ -16,51 +16,44 @@ class SAV:
     
     def __init__(self):
         self.state = IDLE()
-        # FIXME SHOULDN'T BE USING GLOBAL, breaks the encapsulation of using classes 
-        # global phaseA FIXME
-        # global enableA FIXME
-        # global phaseB FIXME
-        # global enableB FIXME
-
-        # global pwmA FIXME
-        # global pwmB FIXME
-        # global pwmSmall FIXME
-        # global pwmLarge FIXME
-        # global smallServoCtrl FIXME
-        # global largeServoCtrl FIXME
 
         self.phaseA: int = 6
-        enableA: int = 13
-        phaseB: int = 19
-        enableB: int = 26
+        self.enableA: int = 13
+        self.phaseB: int = 19
+        self.enableB: int = 26
 
+        self.smallServoCtrl: int = 5
+        self.largeServoCtrl: int = 0
 
-        smallServoCtrl: int = 5
-        largeServoCtrl: int = 0
+        self.rangeSense: int = 2
+        self.movPhase: str = 'phaseFork'
+        self.forkFlag: bool = False
+        self.pickDropFlag: bool = False
+        self.mergeFlag: bool = False
 
         GPIO.setmode(GPIO.BCM)
 
         GPIO.setup(self.phaseA, GPIO.OUT)
-        GPIO.setup(enableA, GPIO.OUT) 
-        GPIO.setup(phaseB, GPIO.OUT)
-        GPIO.setup(enableB, GPIO.OUT) 
-        GPIO.setup(largeServoCtrl, GPIO.OUT) 
-        GPIO.setup(smallServoCtrl, GPIO.OUT) 
-        GPIO.setup(rangeSense, GPIO.IN) 
+        GPIO.setup(self.enableA, GPIO.OUT) 
+        GPIO.setup(self.phaseB, GPIO.OUT)
+        GPIO.setup(self.enableB, GPIO.OUT) 
+        GPIO.setup(self.largeServoCtrl, GPIO.OUT) 
+        GPIO.setup(self.smallServoCtrl, GPIO.OUT) 
+        GPIO.setup(self.rangeSense, GPIO.IN) 
         
         GPIO.output(self.phaseA, GPIO.LOW)
-        GPIO.output(enableA, GPIO.LOW)
-        GPIO.output(phaseB, GPIO.LOW)
-        GPIO.output(enableB, GPIO.LOW)
+        GPIO.output(self.enableA, GPIO.LOW)
+        GPIO.output(self.phaseB, GPIO.LOW)
+        GPIO.output(self.enableB, GPIO.LOW)
 
-        pwmA = GPIO.PWM(enableA, 1000)
-        pwmB = GPIO.PWM(enableB, 1000)
-        pwmSmall = GPIO.PWM(smallServoCtrl, 50)
-        pwmLarge = GPIO.PWM(largeServoCtrl, 50) 
-        pwmA.start(0)
-        pwmB.start(0)
-        pwmSmall.start(0) 
-        pwmLarge.start(0) 
+        self.pwmA = GPIO.PWM(self.enableA, 1000)
+        self.pwmB = GPIO.PWM(self.enableB, 1000)
+        self.pwmSmall = GPIO.PWM(self.smallServoCtrl, 50)
+        self.pwmLarge = GPIO.PWM(self.largeServoCtrl, 50) 
+        self.pwmA.start(0)
+        self.pwmB.start(0)
+        self.pwmSmall.start(0) 
+        self.pwmLarge.start(0) 
 
     def switch(self) -> None:
         self.state.switch(self) # FIXME What does this do exactly?
@@ -82,22 +75,17 @@ class IDLE:
 class LISTENING:
 
     def findPath(self) -> None:
-        # global turnOne FIXME
-        # global turnTwo FIXME
-        # global pickUpSide FIXME
-        # global dropOffSide FIXME
-        TParray: list[bool] = MV()
-        turnOne: bool = TParray(0)
-        pickUpSide: bool = TParray(1)
-        turnTwo: bool = TParray(2)
-        dropOffSide: bool = TParray(3)
+        self.TParray: list[bool] = MV()
+        self.turnOne: bool = self.TParray(0)
+        self.pickUpSide: bool = self.TParray(1)
+        self.turnTwo: bool = self.TParray(2)
+        self.dropOffSide: bool = self.TParray(3)
 
     def userWait(self) -> None:
         while(True):
             match input('Decisions received, type "Next" to start race: \n').lower():
                 case 'n' | 'next':
-                    # global startTime FIXME
-                    startTime: float = time.time()
+                    self.startTime: float = time.time()
                     break
                 case _:
                     print('Invalid, try again. \n')
@@ -108,48 +96,34 @@ class LISTENING:
 
 class MOVING:
 
-    # global rangeSense FIXME
-    # global movPhase FIXME
-    # global forkFlag FIXME
-    # global pickDropFlag FIXME
-    # global mergeFlag FIXME
-
-    rangeSense: int = 2
-    movPhase: str = 'phaseFork'
-    forkFlag: bool = False
-    pickDropFlag: bool = False
-    mergeFlag: bool = False
-
-
     def driving(self) -> None:
 
         while(True): 
-            # global rangeOut FIXME
-            rangeOut = bool(GPIO.input(rangeSense))
-            if movPhase == 'phasePickDrop' | 'phasePark': 
+            rangeOut = bool(GPIO.input(self.rangeSense))
+            if self.movPhase == 'phasePickDrop' | 'phasePark': 
                 if rangeOut == True:
                     GPIO.output(self.phaseA, 0)
-                    pwmA.ChangeDutyCycle(0)
-                    GPIO.output(phaseB, 0)
-                    pwmB.ChangeDutyCycle(0)
+                    self.pwmA.ChangeDutyCycle(0)
+                    GPIO.output(self.phaseB, 0)
+                    self.pwmB.ChangeDutyCycle(0)
                     break
                 else:
                     motorInstruc: list[any] = FindCase(SOME_ARRAY) # FIXME
                     GPIO.output(self.phaseA, motorInstruc(0))
-                    pwmA.ChangeDutyCycle(motorInstruc(1)/1000) # The divide by thousand is because of the frequency
-                    GPIO.output(phaseB, motorInstruc(2))
-                    pwmB.ChangeDutyCycle(motorInstruc(3)/1000)
+                    self.pwmA.ChangeDutyCycle(motorInstruc(1)/1000) # The divide by thousand is because of the frequency
+                    GPIO.output(self.phaseB, motorInstruc(2))
+                    self.pwmB.ChangeDutyCycle(motorInstruc(3)/1000)
             else:
                 motorInstruc: list[any] = FindCase(SOME_ARRAY) # FIXME
-                GPIO.output(phaseA, motorInstruc(0))
-                pwmA.ChangeDutyCycle(motorInstruc(1)/1000)
-                GPIO.output(phaseB, motorInstruc(2))
-                pwmB.ChangeDutyCycle(motorInstruc(3)/1000)
+                GPIO.output(self.phaseA, motorInstruc(0))
+                self.pwmA.ChangeDutyCycle(motorInstruc(1)/1000)
+                GPIO.output(self.phaseB, motorInstruc(2))
+                self.pwmB.ChangeDutyCycle(motorInstruc(3)/1000)
 
     def switch(self, sav) -> None:
-        match movPhase:
+        match self.movPhase:
             case 'phasePickDrop':
-                if pickDropFlag == False:
+                if self.pickDropFlag == False:
                     sav.state = PICKUP()
                     print('Changing state to PICKUP')
                 else:
@@ -159,7 +133,7 @@ class MOVING:
                 sav.state = PARKING()
                 print('Changing state to PARKING')
 
-class PICKUP:
+class PICKUP: 
     movPhase: str = 'phaseMerge'
     pickDropFlag: bool = True 
 
@@ -168,10 +142,13 @@ class PICKUP:
     #         ... 
     #     else:
     #         fixPosition() # This will call some function that makes the SAV move to fix it's position
-    def pickUpLegoMan(self) -> None:
+
+    # TODO add method to move backwards so that arm is inline
+
+    def pickUpLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
         setSmallServo(120)
         time.sleep(2)
-        if pickUpSide == False:
+        if self.pickUpSide == False:
             setLargeServo(180) 
         else:
             setLargeServo(0)
@@ -188,8 +165,8 @@ class PICKUP:
 class DROPOFF:
 
     movPhase: str = 'phaseMerge'
-    def dropOffLegoMan(self) -> None:
-        if dropOffSide == False:
+    def dropOffLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
+        if self.dropOffSide == False:
             setLargeServo(180)
         else: 
             setLargeServo(0)
@@ -218,7 +195,7 @@ class COMPLETE:
 
     def endStopWatch(self) -> None:
         endTime: float = time.time()
-        raceTime: float = endTime - startTime
+        raceTime: float = endTime - self.startTime
         minutes: int = raceTime//60
         seconds: float = raceTime%60
         print(f'You took {minutes} minutes and {seconds} seconds to complete the track. ')
