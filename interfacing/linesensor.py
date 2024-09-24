@@ -96,30 +96,30 @@ class LineSensor:
             for pin in range(self._sensor_count):
                 GPIO.output(self.sensor_pins[pin], GPIO.HIGH)
 
-            # wait for 10 microsecs
-            time.sleep(0.00001)  # 10 microseconds
+                # wait for 10 microsecs
+                time.sleep(0.001)  # 10 microseconds
 
-            # start timing
-            start_time = time.time()
+                # start timing
+                start_time = time.time()
 
-            # set data I/O lines to input
-            for pin in range(self._sensor_count):
+                # set data I/O lines to input
                 GPIO.setup(self.sensor_pins[pin], GPIO.IN)
 
-            # measure the discharge time
-            while True:
+                while GPIO.input(sensor_values[pin]):
+                    if elapsed_time > self.max_value:
+                        sensor_values[pin] = 0  # Stop if time exceeds the maximum threshold
+                    else:
+                        pass
+
+                # measure the discharge time
                 # convert to microseconds
                 # elapsed_time = (time.time() - start_time) * 1000000
                 elapsed_time = time.time() - start_time
 
-                if elapsed_time > self.max_value:
-                    break  # Stop if time exceeds the maximum threshold
-
-                for i in range(self._sensor_count):
-                    if not read_flag[i]:
-                        if GPIO.input(self.sensor_pins[i]) == GPIO.LOW and elapsed_time < sensor_values[i]:
-                            sensor_values[i] = elapsed_time
-                            read_flag[i] = True
+                if not read_flag[pin]:
+                    if GPIO.input(self.sensor_pins[pin]) == GPIO.LOW:
+                        sensor_values[pin] = elapsed_time
+                        read_flag[pin] = True
 
                 if all(read_flag):
                     break
@@ -127,10 +127,9 @@ class LineSensor:
             # turn IR LEDs off
             # self.emitters_off()
 
-            binary_array = [(0 if time_val > self.threshold else 1)
-                            for time_val in sensor_values]
+            # sensor_values = [(0 if time_val < self.threshold else 1) for time_val in sensor_values]
 
-            return binary_array  # outputs discharge time in microsecs
+            return sensor_values  # outputs discharge time in microsecs
 
     def calibrate(self, num_samples=10):
         for _ in range(num_samples):
@@ -183,7 +182,7 @@ if __name__ == "__main__":
     # define control pin
     CTRL_PIN = 18
     # Example GPIO pins for the sensors
-    sensor_pins = [23, 20, 24, 16, 25, 12, 8, 1, 7]
+    sensor_pins = [11, 17, 9, 4, 10, 14, 22, 15, 27]
 
     sensors = LineSensor(CTRL_PIN, sensor_pins, max_discharge)
 
