@@ -1,12 +1,6 @@
-from SystemLogic import movPhase, turnOne, pickDropFlag, turnTwo, forkFlag
-
 # TODO Make some kind of sequence detector to recognise when we have gone past the fork or merge
 
-
-# FIXME the return percent, not dutycycle --- Actually this might be fine
-
-
-def FindCase(rSensor: list[int]) -> list[int]:
+def FindCase(rSensor: list[int], movPhase: str, turnOne: bool, pickDropFlag: bool, turnTwo: bool, forkFlag: bool) -> list[int]:
         match rSensor: 
     # Base movement, forward and stop
             case [0, 0, 0, 1, 1, 1, 0, 0, 0]:
@@ -49,7 +43,6 @@ def FindCase(rSensor: list[int]) -> list[int]:
             case [1, 0, 0, 0, 0, 0, 0, 0, 0]:
                 print('leftest')
                 return [1, 5, 1, 30]
-            
             case _:
                 match movPhase: 
                     case 'phaseFork':
@@ -195,8 +188,8 @@ def FindCase(rSensor: list[int]) -> list[int]:
                                 print('left')
                                 return [1, 45, 1, 50]
                             case _:
-                                if pickDropFlag == False: 
-                                    if turnOne == False: 
+                                if pickDropFlag == False: # IF FALSE THEN WE ARE PICKING UP
+                                    if turnOne == False: # IF FALSE THEN WE ARE MERGING COMING FROM THE LEFT
                                         match rSensor:
                                             case [0, 0, 0, 1, 1, 1, 0, 1, 1] | [0, 0, 0, 1, 1, 1, 0, 0, 1]:
                                                 print('forward')
@@ -208,7 +201,7 @@ def FindCase(rSensor: list[int]) -> list[int]:
                                                 print('right')
                                                 return [1, 50, 1, 45] 
                                     else:
-                                        match rSensor:
+                                        match rSensor: 
                                             case [1, 1, 0, 1, 1, 1, 0, 0, 0] | [1, 0, 0, 1, 1, 1, 0, 0, 0]:
                                                 print('forward')
                                                 return [1, 50, 1, 50]
@@ -219,7 +212,7 @@ def FindCase(rSensor: list[int]) -> list[int]:
                                                 print('right')
                                                 return [1, 50, 1, 45]
                                 else:
-                                    if turnTwo == False:
+                                    if turnTwo == False: # IF FALSE THEN WE ARE MERGING COMING FROM THE LEFT
                                         match rSensor:
                                             case [0, 0, 0, 1, 1, 1, 0, 1, 1] | [0, 0, 0, 1, 1, 1, 0, 0, 1]:
                                                 print('forward')
