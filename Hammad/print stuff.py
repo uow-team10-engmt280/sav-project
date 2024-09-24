@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-from machine_vision import panel_directions  # Import the 2-bit array from machine_vision.py
+#from machine_vision import panel_directions  # Import the 2-bit array from machine_vision.py
 import reflectance_sensor_v5 as ls
 
 class SAV:
@@ -17,30 +17,33 @@ class SAV:
     def run(self):
         while True:
             if ls.get_sensor_outputs() == line_Sensor_forward:
-                print("Go Forward")
+                print("Go Forward\n")
             elif ls.get_sensor_outputs() == line_Sensor_left:
-                print("Turn Left")
+                print("Turn Left\n")
             elif ls.get_sensor_outputs() == line_Sensor_right:
-                print("Turn Right")
+                print("Turn Right\n")
             elif ls.get_sensor_outputs() == line_Sensor_slight_offtrack_left:
-                print("Offtrack left")
+                print("Offtrack left\n")
             elif ls.get_sensor_outputs() == line_Sensor_slight_offtrack_right:
-                print("Offtrack right")
+                print("Offtrack right\n")
             elif ls.get_sensor_outputs() == line_Sensor_offtrack:
-                print("Offtrack")
+                print("Offtrack\n")
             elif ls.get_sensor_outputs() == line_Sensor_left:
-                print("Turn Left")
+                print("Turn Left\n")
             elif ls.get_sensor_outputs() == line_Sensor_sharpleft:
-                print("Sharp Left")
+                print("Sharp Left\n")
             elif ls.get_sensor_outputs() == line_Sensor_sharpright:
                 print("Sharp Right")
+            else:
+                print("???\n")
             
             
 
 if __name__ == "__main__":
     try:
-        sav = SAV()
-        sav.run()
+        while True
+            sav = SAV()
+            sav.run()
     except KeyboardInterrupt:
         print("Cleanup")
         GPIO.cleanup()
