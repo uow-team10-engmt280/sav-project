@@ -67,7 +67,7 @@ class IDLE:
                     print('Invalid, try again. \n')
     
     def switch(self, sav) -> None:
-        sav.state = LISTENING()
+        self.sav.state = LISTENING()
         print('Changing state to LISTENING')
 
 class LISTENING:
@@ -76,7 +76,7 @@ class LISTENING:
 
         takePicture()
 
-        
+
 
         self.TParray: list[bool] = MV()
         self.turnOne: bool = self.TParray(0)
@@ -94,7 +94,7 @@ class LISTENING:
                     print('Invalid, try again. \n')
 
     def switch(self, sav) -> None:
-        sav.state = MOVING()
+        self.sav.state = MOVING()
         print('Changing state to MOVING')
 
 class MOVING:
@@ -102,16 +102,16 @@ class MOVING:
     def driving(self) -> None:
 
         while(True): 
-            rangeOut = bool(GPIO.input(self.rangeSense))
+            self.rangeOut = bool(GPIO.input(self.rangeSense))
             if self.movPhase == 'phasePickDrop' | 'phasePark':
-                if rangeOut == True:
+                if self.rangeOut == True:
                     GPIO.output(self.phaseA, 0)
                     self.pwmA.ChangeDutyCycle(0)
                     GPIO.output(self.phaseB, 0)
                     self.pwmB.ChangeDutyCycle(0)
                     break
                 else:
-                    motorInstruc: list[any] = FindCase(SOME_ARRAY) # FIXME
+                    self.motorInstruc: list[any] = FindCase(SOME_ARRAY) # FIXME
                     GPIO.output(self.phaseA, motorInstruc(0))
                     self.pwmA.ChangeDutyCycle(motorInstruc(1)/1000) # The divide by thousand is because of the frequency
                     GPIO.output(self.phaseB, motorInstruc(2))
@@ -127,13 +127,13 @@ class MOVING:
         match self.movPhase:
             case 'phasePickDrop':
                 if self.pickDropFlag == False:
-                    sav.state = PICKUP()
+                    self.sav.state = PICKUP()
                     print('Changing state to PICKUP')
                 else:
-                    sav.state = DROPOFF()
+                    self.sav.state = DROPOFF()
                     print('Changing state to DROPOFF')
             case 'phasePark':
-                sav.state = PARKING()
+                self.sav.state = PARKING()
                 print('Changing state to PARKING')
 
 class PICKUP: 
@@ -148,13 +148,13 @@ class PICKUP:
 
     # TODO add method to move backwards so that arm is inline
     def reverse(self) -> None:
-        reverseTime = time.time()
+        self.reverseTime = time.time()
         while True:
             GPIO.output(self.phaseA, 0)
             self.pwmA.ChangeDutyCycle(50/1000) # The divide by thousand is because of the frequency
             GPIO.output(self.phaseB, 0)
             self.pwmB.ChangeDutyCycle(50/1000)
-            if reverseTime - time.time() == 3:
+            if self.reverseTime - time.time() == 3:
                 break
 
     def pickUpLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
@@ -227,8 +227,6 @@ class COMPLETE:
     
     def switch(self, sav) -> None:
         ...
-    
-    # End programme nicely (stop processes and other programmes, have a nice complete message at the end)
 
 def main() -> None:
     sav = SAV()

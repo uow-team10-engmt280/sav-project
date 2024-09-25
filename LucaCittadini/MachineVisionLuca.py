@@ -1,3 +1,5 @@
+# NOTE RED
+
 import cv2 as cv
 import numpy as np
 # from picamzero import Camera # type: ignore
@@ -175,9 +177,6 @@ def MV() -> list[bool]:
     cv.waitKey(0)
     cv.destroyAllWindows()
     return direction
-
-
-test = MV()
 
 # try:
 #     MV()
