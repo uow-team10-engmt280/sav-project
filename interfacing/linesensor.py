@@ -106,23 +106,24 @@ class LineSensor:
                 GPIO.setup(self.sensor_pins[pin], GPIO.IN)
 
                 while GPIO.input(sensor_values[pin]):
-                    if elapsed_time > self.max_value:
-                        sensor_values[pin] = 0  # Stop if time exceeds the maximum threshold
-                    else:
-                        pass
+                    pass
 
                 # measure the discharge time
                 # convert to microseconds
                 # elapsed_time = (time.time() - start_time) * 1000000
                 elapsed_time = time.time() - start_time
 
-                if not read_flag[pin]:
-                    if GPIO.input(self.sensor_pins[pin]) == GPIO.LOW:
-                        sensor_values[pin] = elapsed_time
-                        read_flag[pin] = True
+                elapsed_time = round(elapsed_time * 10e6)
 
-                if all(read_flag):
-                    break
+                # compare discharge time against corresponding threshold value
+                if elapsed_time <= 1000:
+                    output = 1
+                elif elapsed_time > 1000:
+                    output = 0
+                else:
+                    output = '?'
+
+                sensor_values[sensor_pins.index(pin)] = output
                 
             # turn IR LEDs off
             # self.emitters_off()

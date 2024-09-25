@@ -4,3 +4,4 @@ interfacing/test_linesensor.py
 .vscode*
 *init*
 .venv/Lib/site-packages/_distutils_hack/__pycache__/__init__.cpython-311.pyc
+.venv/Lib/site-packages/_distutils_hack/__pycache__/__init__.cpython-311.pyc
