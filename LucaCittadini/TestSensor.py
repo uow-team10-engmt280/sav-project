@@ -7,7 +7,6 @@ import MATTsSENSORPROGRAMME # type: ignore
 
 b, c, d, e, f = 'phaseFork', 0, 0, 0, 0
 
-
 try:
     while True:
         FindCase(MATTsSENSORPROGRAMME, b, c, d, e, f)

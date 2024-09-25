@@ -44,7 +44,7 @@ def FindCase(rSensor: list[int], movPhase: str, turnOne: bool, pickDropFlag: boo
                 print('leftest')
                 return [1, 5, 1, 30]
             case _:
-                match movPhase: 
+                match movPhase:
                     case 'phaseFork':
                         if forkFlag == False: # IF FALSE THEN WE ARE AT FORK ONE
                             if turnOne == False: 

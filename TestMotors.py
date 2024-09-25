@@ -6,7 +6,7 @@ enableA: int = 12
 phaseB: int = 19
 enableB: int = 13
 
-driveMode: int = 0
+driveMode: int = 1
 
 GPIO.setmode(GPIO.BCM)
 

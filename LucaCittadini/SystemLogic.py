@@ -2,30 +2,28 @@ from RPi import GPIO # type: ignore
 import time
 import SOME_ARRAY # type: ignore
 from typing import Protocol
-from MachineVisionLuca import MV 
+from MachineVisionLuca import MV, takePicture
 from FindCase import FindCase
 from ServoFunctions import setLargeServo, setSmallServo
-# from FixPosition import fixPosition 
 
 class State(Protocol):
     def switch(self, sav) -> None:
         ...
-
 
 class SAV:
     
     def __init__(self):
         self.state = IDLE()
 
-        self.phaseA: int = 6
-        self.enableA: int = 13
+        self.phaseA: int = 5
+        self.enableA: int = 12
         self.phaseB: int = 19
-        self.enableB: int = 26
+        self.enableB: int = 13
 
-        self.smallServoCtrl: int = 5
-        self.largeServoCtrl: int = 0
+        self.smallServoCtrl: int = 16
+        self.largeServoCtrl: int = 21
 
-        self.rangeSense: int = 2
+        self.rangeSense: int = 6
         self.movPhase: str = 'phaseFork'
         self.forkFlag: bool = False
         self.pickDropFlag: bool = False
@@ -75,6 +73,11 @@ class IDLE:
 class LISTENING:
 
     def findPath(self) -> None:
+
+        takePicture()
+
+        
+
         self.TParray: list[bool] = MV()
         self.turnOne: bool = self.TParray(0)
         self.pickUpSide: bool = self.TParray(1)
@@ -100,7 +103,7 @@ class MOVING:
 
         while(True): 
             rangeOut = bool(GPIO.input(self.rangeSense))
-            if self.movPhase == 'phasePickDrop' | 'phasePark': 
+            if self.movPhase == 'phasePickDrop' | 'phasePark':
                 if rangeOut == True:
                     GPIO.output(self.phaseA, 0)
                     self.pwmA.ChangeDutyCycle(0)
@@ -144,6 +147,15 @@ class PICKUP:
     #         fixPosition() # This will call some function that makes the SAV move to fix it's position
 
     # TODO add method to move backwards so that arm is inline
+    def reverse(self) -> None:
+        reverseTime = time.time()
+        while True:
+            GPIO.output(self.phaseA, 0)
+            self.pwmA.ChangeDutyCycle(50/1000) # The divide by thousand is because of the frequency
+            GPIO.output(self.phaseB, 0)
+            self.pwmB.ChangeDutyCycle(50/1000)
+            if reverseTime - time.time() == 3:
+                break
 
     def pickUpLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
         setSmallServo(120)
@@ -177,6 +189,16 @@ class DROPOFF:
         time.sleep(2)
         setSmallServo(0)
         time.sleep(2)
+
+    def reverse(self) -> None:
+        reverseTime = time.time()
+        while True:
+            GPIO.output(self.phaseA, 0)
+            self.pwmA.ChangeDutyCycle(50/1000) # The divide by thousand is because of the frequency
+            GPIO.output(self.phaseB, 0)
+            self.pwmB.ChangeDutyCycle(50/1000)
+            if reverseTime - time.time() == 3:
+                break
 
     def switch(self, sav) -> None:
         sav.state = MOVING()
