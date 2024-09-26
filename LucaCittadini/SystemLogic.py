@@ -76,8 +76,6 @@ class LISTENING:
 
         takePicture()
 
-
-
         self.TParray: list[bool] = MV()
         self.turnOne: bool = self.TParray(0)
         self.pickUpSide: bool = self.TParray(1)
@@ -140,13 +138,6 @@ class PICKUP:
     movPhase: str = 'phaseMerge'
     pickDropFlag: bool = True 
 
-    # def checkPos(self) -> None: 
-    #     if SOME_ARRAY == [0, 0, 0, 1, 1, 1, 0, 0, 0]:
-    #         ... 
-    #     else:
-    #         fixPosition() # This will call some function that makes the SAV move to fix it's position
-
-    # TODO add method to move backwards so that arm is inline
     def reverse(self) -> None:
         self.reverseTime = time.time()
         while True:
@@ -158,17 +149,21 @@ class PICKUP:
                 break
 
     def pickUpLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
-        setSmallServo(120)
-        time.sleep(2)
+        self.pwmSmall.start(0) 
+        self.pwmLarge.start(0) 
+        setSmallServo(180)
+        time.sleep(1)
         if self.pickUpSide == False:
-            setLargeServo(180) 
+            setLargeServo(0) 
         else:
-            setLargeServo(0)
-        time.sleep(2)
-        setSmallServo(0)
-        time.sleep(2)
+            setLargeServo(180)
+        time.sleep(1)
+        setSmallServo(45)
+        time.sleep(1)
         setLargeServo(90)
-        time.sleep(2)
+        time.sleep(1)
+        self.pwmSmall.stop(0) 
+        self.pwmLarge.stop(0) 
 
     def switch(self, sav) -> None:
         sav.state = MOVING()
@@ -178,17 +173,21 @@ class DROPOFF:
 
     movPhase: str = 'phaseMerge'
     def dropOffLegoMan(self) -> None: # FIXME check the note in the ServoFunctions programme
+        self.pwmSmall.start(0) 
+        self.pwmLarge.start(0) 
         if self.dropOffSide == False:
-            setLargeServo(180)
-        else: 
             setLargeServo(0)
-        time.sleep(2)
-        setSmallServo(120)
-        time.sleep(2)
+        else: 
+            setLargeServo(180)
+        time.sleep(1)
+        setSmallServo(180)
+        time.sleep(1)
         setLargeServo(90)
-        time.sleep(2)
-        setSmallServo(0)
-        time.sleep(2)
+        time.sleep(1)
+        setSmallServo(45) # Actually 0 but function wrong
+        time.sleep(1)
+        self.pwmSmall.stop(0) 
+        self.pwmLarge.stop(0) 
 
     def reverse(self) -> None:
         reverseTime = time.time()
@@ -262,4 +261,3 @@ def main() -> None:
     sav.endStopWatch()
     sav.clean()
 
-    
