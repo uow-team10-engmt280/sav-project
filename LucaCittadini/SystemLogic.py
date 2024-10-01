@@ -1,62 +1,65 @@
-from RPi import GPIO # type: ignore 
-import time
-import SOME_ARRAY # type: ignore
+# from RPi import GPIO # type: ignore 
+# import time
+# import SOME_ARRAY # type: ignore
 from typing import Protocol
-from MachineVisionLuca import MV, takePicture
-from FindCase import FindCase
-from ServoFunctions import setLargeServo, setSmallServo
+# from MachineVisionLuca import MV, takePicture
+# from FindCase import FindCase
+# from ServoFunctions import setLargeServo, setSmallServo
 
 class State(Protocol):
-    def switch(self, sav) -> None:
+    def switch(self, state) -> None:
         ...
 
 class SAV:
     
-    def __init__(self):
-        self.state = IDLE()
+    def __init__(self, state):
+        self.state = state
 
-        self.phaseA: int = 5
-        self.enableA: int = 12
-        self.phaseB: int = 19
-        self.enableB: int = 13
+        # self.phaseA: int = 5
+        # self.enableA: int = 12
+        # self.phaseB: int = 19
+        # self.enableB: int = 13
 
-        self.smallServoCtrl: int = 16
-        self.largeServoCtrl: int = 21
+        # self.smallServoCtrl: int = 16
+        # self.largeServoCtrl: int = 21
 
-        self.rangeSense: int = 6
-        self.movPhase: str = 'phaseFork'
-        self.forkFlag: bool = False
-        self.pickDropFlag: bool = False
-        self.mergeFlag: bool = False
+        # self.rangeSense: int = 6
+        # self.movPhase: str = 'phaseFork'
+        # self.forkFlag: bool = False
+        # self.pickDropFlag: bool = False
+        # self.mergeFlag: bool = False
 
-        GPIO.setmode(GPIO.BCM)
+        # GPIO.setmode(GPIO.BCM)
 
-        GPIO.setup(self.phaseA, GPIO.OUT)
-        GPIO.setup(self.enableA, GPIO.OUT) 
-        GPIO.setup(self.phaseB, GPIO.OUT)
-        GPIO.setup(self.enableB, GPIO.OUT) 
-        GPIO.setup(self.largeServoCtrl, GPIO.OUT) 
-        GPIO.setup(self.smallServoCtrl, GPIO.OUT) 
-        GPIO.setup(self.rangeSense, GPIO.IN) 
+        # GPIO.setup(self.phaseA, GPIO.OUT)
+        # GPIO.setup(self.enableA, GPIO.OUT) 
+        # GPIO.setup(self.phaseB, GPIO.OUT)
+        # GPIO.setup(self.enableB, GPIO.OUT) 
+        # GPIO.setup(self.largeServoCtrl, GPIO.OUT) 
+        # GPIO.setup(self.smallServoCtrl, GPIO.OUT) 
+        # GPIO.setup(self.rangeSense, GPIO.IN) 
         
-        GPIO.output(self.phaseA, GPIO.LOW)
-        GPIO.output(self.enableA, GPIO.LOW)
-        GPIO.output(self.phaseB, GPIO.LOW)
-        GPIO.output(self.enableB, GPIO.LOW)
+        # GPIO.output(self.phaseA, GPIO.LOW)
+        # GPIO.output(self.enableA, GPIO.LOW)
+        # GPIO.output(self.phaseB, GPIO.LOW)
+        # GPIO.output(self.enableB, GPIO.LOW)
 
-        self.pwmA = GPIO.PWM(self.enableA, 1000)
-        self.pwmB = GPIO.PWM(self.enableB, 1000)
-        self.pwmSmall = GPIO.PWM(self.smallServoCtrl, 50)
-        self.pwmLarge = GPIO.PWM(self.largeServoCtrl, 50) 
-        self.pwmA.start(0)
-        self.pwmB.start(0)
-        self.pwmSmall.start(0) 
-        self.pwmLarge.start(0) 
+        # self.pwmA = GPIO.PWM(self.enableA, 1000)
+        # self.pwmB = GPIO.PWM(self.enableB, 1000)
+        # self.pwmSmall = GPIO.PWM(self.smallServoCtrl, 50)
+        # self.pwmLarge = GPIO.PWM(self.largeServoCtrl, 50) 
+        # self.pwmA.start(0)
+        # self.pwmB.start(0)
+        # self.pwmSmall.start(0) 
+        # self.pwmLarge.start(0) 
 
     def switch(self) -> None:
         self.state.switch(self) # FIXME What does this do exactly?
         
 class IDLE:
+
+    def __init__(self, state) -> None:
+        self.state = state
 
     def userWait(self) -> None: 
         while(True):        
