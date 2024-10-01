@@ -10,11 +10,50 @@ import RPi.GPIO as GPIO # type: ignore
 
 def setSmallServo(angle: int) -> None:
     dutyCycle: float = 6.5 + (angle / 120) * 7 # should test
-    SAV.pwmSmall.ChangeDutyCycle(dutyCycle)
+    SAV.pwmSmall.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
 
 def setLargeServo(angle: int) -> None:
     dutyCycle: float = 2.5 + (angle / 180) * 10 # good
-    SAV.pwmLarge.ChangeDutyCycle(dutyCycle)
+    SAV.pwmLarge.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
+
+def pickUpLeft() -> None:
+    setSmallServo(120)
+    setLargeServo(0)
+    setSmallServo(20)
+    setLargeServo(90)
+
+def pickUpRight() -> None:
+    setSmallServo(120)
+    setLargeServo(180)
+    setSmallServo(20)
+    setLargeServo(90)
+
+def dropOffLeft() -> None:
+    setLargeServo(0)
+    setSmallServo(120)
+    setLargeServo(90)
+    setSmallServo(20)
+
+def dropOffRight() -> None:
+    setLargeServo(180)
+    setSmallServo(120)
+    setLargeServo(90)
+    setSmallServo(20)
+
+def servoAction(turn, side) -> None:
+    match turn:
+        case False:
+            match side:
+                case False:
+                    pickUpLeft()
+                case True:
+                    pickUpRight()
+        case True:
+            match side:
+                case False:
+                    dropOffLeft()
+                case True:
+                    dropOffRight()
 
 # def testServos() -> None:
 #     GPIO.setmode(GPIO.BCM)
