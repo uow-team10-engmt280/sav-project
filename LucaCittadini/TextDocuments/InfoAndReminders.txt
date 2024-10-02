@@ -79,3 +79,9 @@ been returned through the function
 GPIO cleanup)
 
 5. NEED TO FIX THE "MachineVisionMain.py" PROGRAMME***
+
+# NOTE Small servo angles go between 0 and 120 degrees, Large servo angles from 0 to 180 degrees
+# The small servo pulse widths go from 900µs to 2100µs (0.9ms, 2.1ms)
+# The large servo pulse widths go from 500µs to 2500µs (0.5ms, 2.5ms)
+
+# NOTE 0 degrees is fully to the right, 120 and 180 are fully to the left for the small and large servos respectively

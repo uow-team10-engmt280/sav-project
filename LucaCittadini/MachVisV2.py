@@ -6,7 +6,7 @@ import paho.mqtt.client as paho # type: ignore # NOTE this is for subscribing
 from time import sleep
 # MQTT = Message Queuing Telemetry Transport
 
-def MV(photoNumber) -> list[bool]:
+def MV() -> list[bool]:
     def takePicture(): 
         picam2 = Picamera2()
         picam2.configure(picam2.create_video_configuration(raw = {"size": (1640, 1232)}, main = {"size": (1280, 960), "format": 'RGB888'}))
@@ -179,6 +179,7 @@ def MV(photoNumber) -> list[bool]:
                     elif boxes[1] > int(rimage.shape[1])*4/8:
                         direction1 = [True, True]
                     return direction1
+            
             cv.imshow('Final Image', FinalImage)
             if cv.waitKey(20) & stop == 1:
                     break
@@ -186,28 +187,29 @@ def MV(photoNumber) -> list[bool]:
     decisions = mainLoop()
     cv.destroyAllWindows()
 
-    try:
-        def publish():
-            broker = "192.168.1.10"
-            port = 1883
-            def on_publish(client, userdata, result):
-                pass
-
-            client1 = paho.Client("toSAV")
-            client1.on_publish = on_publish
-            client1.connect(broker, port)
-
-            string = str(decisions)
-            while True:
-                client1.publish('MT280/Group10', string) 
-                print(f'data sent {string}')
-                sleep(0.01)
-        publish()
-    except:
-        pass
-
     return decisions
 
-test = MV(0)
-print(test)
-# MIGHT NOT HAVE ACCESS TO KEYBOARD AND MOUSE DURING RACE 
+try:
+    def publish():
+        broker = "192.168.1.10"
+        port = 1883
+        def on_publish(client, userdata, result):
+            pass
+
+        client1 = paho.Client("toSAV")
+        client1.on_publish = on_publish
+        client1.connect(broker, port)
+
+        string = str(MV())
+        count = 0
+        while True:
+            client1.publish('MT280/Group10', string) 
+            print(f'data sent {string}')
+            sleep(0.5)
+            count += 1
+            if count == 40:
+                return None
+    publish()
+    publish()
+except:
+    pass

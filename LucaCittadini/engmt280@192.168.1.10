@@ -1,0 +1,266 @@
+import cv2 as cv
+import numpy as np
+from picamera2 import Picamera2  # type: ignore  # For taking the picture using PiCamera2
+import paho.mqtt.client as paho  # type: ignore  # For MQTT publishing
+from time import sleep  # Used for adding delays
+
+# MQTT = Message Queuing Telemetry Transport
+# The function MV() manages the image processing, decision-making, and publishing results twice with a 20-second delay.
+def MV(photoNumber) -> list[list[bool]]:
+    
+    # Function to capture a picture using the PiCamera2
+    def takePicture():
+        picam2 = Picamera2()
+        # Configure the camera with a specified resolution and RGB format
+        picam2.configure(picam2.create_video_configuration(raw={"size": (1640, 1232)}, main={"size": (1280, 960), "format": 'RGB888'}))
+        picam2.start()  # Start the camera
+        picture = picam2.capture_array()  # Capture and return the image as a NumPy array
+        return picture
+
+    # Function to rescale the captured frame (image) by a given scale factor (default 50%)
+    def rescaleFrame(frame, scale=0.50):
+        width = int(frame.shape[1] * scale)  # Calculate new width
+        height = int(frame.shape[0] * scale)  # Calculate new height
+        dimensions = (width, height)  # Store the new dimensions
+        return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)  # Resize and return the image
+
+    # Decorator function to create the window with controls (trackbars) and call the main image processing loop
+    def createWindows(function):  # It wraps the main loop to ensure a consistent setup of the control window
+        def wrapper():
+            def nothing(placeHolder) -> None:  # Placeholder function for trackbars (required by OpenCV)
+                pass
+            try:
+                # Try to capture a picture using the PiCamera2
+                image = takePicture()
+            except:
+                # If the camera is not available, load a default image from the file system
+                image = rescaleFrame(cv.imread("C:/path/to/default_image.png"))
+
+            # Create a sliding mask the same size as the image (used for focusing on areas in the image)
+            slidingMask = np.zeros((image.shape[0], image.shape[1], 3), dtype='uint8')
+
+            # Create a control window with trackbars for adjusting various settings
+            cv.namedWindow('Controls')
+            cv.resizeWindow('Controls', 600, 550)  # Resize the control window
+
+            # Creating control trackbars for selecting colors, setting HSV thresholds, etc.
+            cv.createTrackbar('DIRECTIONS ACQUIRED', 'Controls', 0, 1, nothing)
+            cv.createTrackbar('H', 'Controls', 0, int(image.shape[0]), nothing)
+            cv.createTrackbar('W', 'Controls', int(image.shape[1]), int(image.shape[1]), nothing)
+            cv.createTrackbar('Find B', 'Controls', 0, 1, nothing)  # For finding blue objects
+            cv.createTrackbar('Find G', 'Controls', 0, 1, nothing)  # For finding green objects
+            cv.createTrackbar('Find R', 'Controls', 0, 1, nothing)  # For finding red objects
+            cv.createTrackbar('Find Y', 'Controls', 0, 1, nothing)  # For finding yellow objects
+            cv.createTrackbar('Find Special R', 'Controls', 0, 1, nothing)  # For finding a special red object
+
+            # Trackbars for setting HSV (Hue, Saturation, and Value) ranges
+            cv.createTrackbar('Hue lower', 'Controls', 0, 180, nothing)
+            cv.createTrackbar('Sat lower', 'Controls', 0, 255, nothing)
+            cv.createTrackbar('Val lower', 'Controls', 0, 255, nothing)
+            cv.createTrackbar('Hue higher', 'Controls', 180, 180, nothing)
+            cv.createTrackbar('Sat higher', 'Controls', 255, 255, nothing)
+            cv.createTrackbar('Val higher', 'Controls', 255, 255, nothing)
+
+            return function(slidingMask, image)  # Call the main loop with the sliding mask and captured image
+        return wrapper
+
+    # Main image processing loop function
+    @createWindows
+    def mainLoop(S_mask, rimage) -> list[bool]:
+        direction1 = []
+        direction2 = []
+        while True:
+            # Retrieve the current position of the trackbars
+            testH = cv.getTrackbarPos('H', 'Controls')
+            testW = cv.getTrackbarPos('W', 'Controls')
+            b = cv.getTrackbarPos('Find B', 'Controls')
+            g = cv.getTrackbarPos('Find G', 'Controls')
+            r = cv.getTrackbarPos('Find R', 'Controls')
+            y = cv.getTrackbarPos('Find Y', 'Controls')
+            sc = cv.getTrackbarPos('Find Special R', 'Controls')
+            stop = cv.getTrackbarPos('DIRECTIONS ACQUIRED', 'Controls')
+
+            # Adjust HSV values based on which color is being detected
+            if b == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 31)
+                cv.setTrackbarPos('Sat lower', 'Controls', 250)
+                cv.setTrackbarPos('Val lower', 'Controls', 87)
+                cv.setTrackbarPos('Hue higher', 'Controls', 180)
+                cv.setTrackbarPos('Sat higher', 'Controls', 255)
+                cv.setTrackbarPos('Val higher', 'Controls', 255)
+                cv.setTrackbarPos('Find B', 'Controls', 0)
+            elif g == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 25)
+                cv.setTrackbarPos('Sat lower', 'Controls', 146)
+                cv.setTrackbarPos('Val lower', 'Controls', 86)
+                cv.setTrackbarPos('Hue higher', 'Controls', 90)
+                cv.setTrackbarPos('Sat higher', 'Controls', 216)
+                cv.setTrackbarPos('Val higher', 'Controls', 212)
+                cv.setTrackbarPos('Find G', 'Controls', 0)
+            elif r == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 0)
+                cv.setTrackbarPos('Sat lower', 'Controls', 207)
+                cv.setTrackbarPos('Val lower', 'Controls', 50)
+                cv.setTrackbarPos('Hue higher', 'Controls', 21)
+                cv.setTrackbarPos('Sat higher', 'Controls', 255)
+                cv.setTrackbarPos('Val higher', 'Controls', 255)
+                cv.setTrackbarPos('Find R', 'Controls', 0)
+            elif y == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 15)
+                cv.setTrackbarPos('Sat lower', 'Controls', 210)
+                cv.setTrackbarPos('Val lower', 'Controls', 50)
+                cv.setTrackbarPos('Hue higher', 'Controls', 57)
+                cv.setTrackbarPos('Sat higher', 'Controls', 255)
+                cv.setTrackbarPos('Val higher', 'Controls', 230)
+                cv.setTrackbarPos('Find Y', 'Controls', 0)
+            elif sc == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 0)
+                cv.setTrackbarPos('Sat lower', 'Controls', 210)
+                cv.setTrackbarPos('Val lower', 'Controls', 50)
+                cv.setTrackbarPos('Hue higher', 'Controls', 180)
+                cv.setTrackbarPos('Sat higher', 'Controls', 250)
+                cv.setTrackbarPos('Val higher', 'Controls', 255)
+                cv.setTrackbarPos('Find Special R', 'Controls', 0)
+            else:
+                # If no color is selected, use the manually set HSV thresholds
+                hue_l = cv.getTrackbarPos('Hue lower', 'Controls')
+                sat_l = cv.getTrackbarPos('Sat lower', 'Controls')
+                val_l = cv.getTrackbarPos('Val lower', 'Controls')
+                hue_h = cv.getTrackbarPos('Hue higher', 'Controls')
+                sat_h = cv.getTrackbarPos('Sat higher', 'Controls')
+                val_h = cv.getTrackbarPos('Val higher', 'Controls')
+
+            # Fill the sliding mask with white and create a black rectangle where tracking occurs
+            cv.rectangle(S_mask, (int(rimage.shape[1]), int(rimage.shape[0])), (0, 0), (255, 255, 255), -1)
+            cv.rectangle(S_mask, (testW, testH), (0, 0), (0, 0, 0), -1)
+
+            # Convert the sliding mask to grayscale and threshold it to create a binary mask
+            sMaskGrey = cv.cvtColor(S_mask, cv.COLOR_BGR2GRAY)
+            _, bitMap = cv.threshold(sMaskGrey, 100, 255, cv.THRESH_BINARY)
+
+            # Apply the binary mask to the original image
+            maskedImage = cv.bitwise_and(rimage, rimage, mask=bitMap)
+
+            # Blur the masked image for better edge detection
+            blurred = cv.bilateralFilter(maskedImage, 5, 30, 50)
+
+            # Convert the blurred image to the HSV color space
+            hsv = cv.cvtColor(blurred, cv.COLOR_BGR2HSV)
+
+            # Apply the HSV threshold (determined by trackbar values)
+            hsvThreshold = cv.inRange(hsv, (hue_l, sat_l, val_l), (hue_h, sat_h, val_h))
+
+            # Find contours in the thresholded image
+            contours, _ = cv.findContours(hsvThreshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+            # Draw contours on the original image
+            cv.drawContours(hsvThreshold, contours, -1, (0, 255, 0), 1)
+
+            # Apply the final mask to the original image
+            FinalImage = cv.bitwise_and(maskedImage, maskedImage, mask=hsvThreshold)
+
+            # Initialize variables for tracking bounding boxes
+            numBoxes = 0
+            boxes = []
+
+            # Loop through each detected contour to find bounding boxes
+            for contour in contours:
+                area = cv.contourArea(contour)
+                if 500 < area < 3000:  # Only consider contours within a certain size range
+                    numBoxes += 1
+                    x, y, w, h = cv.boundingRect(contour)
+                    boxes.append(int(x + w / 2))  # Append the x-coordinate of the bounding box center
+
+                    # Draw the bounding box and its center on the image
+                    cv.rectangle(FinalImage, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    centroid_x = x + w / 2
+                    centroid_y = y + h / 2
+                    cv.putText(FinalImage, f"x= {centroid_x} y= {centroid_y}", (x, y - 10), cv.FONT_HERSHEY_SIMPLEX, 0.25, (0, 255, 0), 1)
+
+            # Logic for handling the detected bounding boxes and calculating directions
+            if numBoxes == 2:  # If exactly 2 objects are detected
+                if boxes[1] < boxes[0]:  # Ensure the boxes are in left-to-right order
+                    boxes.reverse()
+
+            match numBoxes:
+                case 2:  # If two boxes are detected, calculate direction based on their positions
+                    if boxes[1] < boxes[0]:  # Ensure correct ordering of boxes
+                        boxes.reverse()
+
+                    # Determine direction1 based on the rightmost box's position
+                    if boxes[1] > int(rimage.shape[1]) * 7 / 8:
+                        direction1 = [False, False]
+                    elif boxes[1] > int(rimage.shape[1]) * 6 / 8:
+                        direction1 = [False, True]
+                    elif boxes[1] > int(rimage.shape[1]) * 5 / 8:
+                        direction1 = [True, False]
+                    elif boxes[1] > int(rimage.shape[1]) * 4 / 8:
+                        direction1 = [True, True]
+
+                    # Determine direction2 based on the leftmost box's position
+                    if boxes[0] < int(rimage.shape[1]) * 1 / 8:
+                        direction2 = [False, False]
+                    elif boxes[0] < int(rimage.shape[1]) * 2 / 8:
+                        direction2 = [False, True]
+                    elif boxes[0] < int(rimage.shape[1]) * 3 / 8:
+                        direction2 = [True, False]
+                    elif boxes[0] < int(rimage.shape[1]) * 4 / 8:
+                        direction2 = [True, True]
+
+                    return [direction1, direction2]  # Return both directions
+
+                case 1:  # If only one box is detected, calculate direction based on its position
+                    if boxes[0] > int(rimage.shape[1]) * 7 / 8:
+                        direction1 = [False, False]
+                    elif boxes[0] > int(rimage.shape[1]) * 6 / 8:
+                        direction1 = [False, True]
+                    elif boxes[0] > int(rimage.shape[1]) * 5 / 8:
+                        direction1 = [True, False]
+                    elif boxes[0] > int(rimage.shape[1]) * 4 / 8:
+                        direction1 = [True, True]
+                    return direction1
+
+            # Display the final processed image with bounding boxes and contours
+            cv.imshow('Final Image', FinalImage)
+
+            if cv.waitKey(20) & stop == 1:  # Stop the loop if 'DIRECTIONS ACQUIRED' is set to 1
+                break
+
+        return [direction1, direction2]  # Return the directions determined by the image processing
+
+    # Function to publish the results to an MQTT topic
+    def publish(decisions):
+        broker = "192.168.1.10"  # IP address of the MQTT broker
+        port = 1883  # Default port for MQTT communication
+        def on_publish(client, userdata, result):
+            pass  # Callback function after publishing (does nothing here)
+
+        client1 = paho.Client("toSAV")
+        client1.on_publish = on_publish
+        client1.connect(broker, port)
+
+        string = str(decisions)
+        for _ in range(2):  # Publish twice
+            client1.publish('MT280/Group10', string)
+            print(f"Data sent: {string}")
+            sleep(0.01)
+
+    results = []  # To store results from both executions
+    for i in range(2):
+        print(f"Execution {i + 1}")
+        # Run the main loop to process the image and calculate directions
+        decisions = mainLoop()
+        results.append(decisions)
+        publish(decisions)
+
+        if i == 0:
+            # Wait for 20 seconds before taking the second picture and publishing again
+            print("Waiting 20 seconds before second execution...")
+            sleep(20)
+
+    cv.destroyAllWindows()  # Close all OpenCV windows after execution
+    return results
+
+# Test the function
+test = MV(0)
+print(test)

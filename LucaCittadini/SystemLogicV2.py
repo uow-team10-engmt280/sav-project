@@ -1,8 +1,7 @@
 from time import time, sleep
 from MachineVisionLuca import MV
 from ServoFunctions import servoAction
-
-
+from RangeSense import detect
 
 class IDLE(): # The initial state
 
@@ -38,9 +37,14 @@ class LISTENING(): # calls Machine Vision, starts timer
         return self
         
 
-class MOVING(): # calls motor programme (motor programme will call sensor programme), should have children classes that act as the phases (actually might not need to)
+class MOVING(): # calls motor programme (motor programme will call sensor programme)
     
     def motorControl(self) -> None: # The function/method that this calls should deal with the reading of the reflectance sensors, the writing to the motor driver, as well as checking the range sensor to break out of a while loop
+        while True:
+            ... # Call Matt's function
+            if detect() == True:
+                break
+        
         for i in range(0, 5): 
             print(f'Moving... \n')
             sleep(1)
@@ -61,18 +65,18 @@ class ACTION():
 
 
     def activateServos(self) -> None:
-        # self.turn = self.instance.directions[0]
-        # self.side = self.instance.directions[1]
-        # servoAction(self.turn, self.side)
-        print(f'Moving Servos... \n')
-        sleep(5)
+        self.turn = self.instance.directions[0]
+        self.side = self.instance.directions[1]
+        servoAction(self.turn, self.side)
+        # print(f'Moving Servos... \n')
+        # sleep(5)
 
     def switch(self, nextState) -> None:
         if nextState == 'm':
             print(f'Going to the MOVING state. \n')
             return MOVING()
         return self
-        
+
 
 class PARKING(): 
 
