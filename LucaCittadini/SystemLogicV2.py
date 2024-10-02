@@ -20,11 +20,7 @@ class IDLE(): # The initial state
         return self
     
 
-class LISTENING(): # calls Machine Vision, starts timer
-        
-    def findPath(self, directionNum) -> list[bool]:
-        self.instance.directions = MV(directionNum)
-        print(f'Your first turn is {self.instance.directions[0]} and you are picking up on {self.instance.directions[1]}! \n')
+class LISTENING(): # starts timer
     
     def timerStart(self):
         self.instance.startTime = time()
@@ -62,7 +58,6 @@ class MOVING(): # calls motor programme (motor programme will call sensor progra
 class ACTION(): 
     
     def fixPosition(self) -> None: ... # Probably just calls a function from somewhere else
-
 
     def activateServos(self) -> None:
         self.turn = self.instance.directions[0]
@@ -121,7 +116,6 @@ jamal.state.userWait() # jamal = SAV, state = IDLE, userWait is a method within 
 jamal.switch('l')
 
 
-jamal.state.findPath(0)
 jamal.state.timerStart()
 jamal.switch('m')
 

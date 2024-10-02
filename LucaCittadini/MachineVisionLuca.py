@@ -12,6 +12,7 @@ def MV(photoNumber) -> list[bool]:
         picam2.configure(picam2.create_video_configuration(raw = {"size": (1640, 1232)}, main = {"size": (1280, 960), "format": 'RGB888'}))
         picam2.start()
         picture  = picam2.capture_array()
+        picam2.stop()
         return picture
 
     def rescaleFrame(frame, scale=0.50):
@@ -25,7 +26,7 @@ def MV(photoNumber) -> list[bool]:
             def nothing(placeHolder) -> None:
                 pass
             try:
-                image = takePicture()
+                image = rescaleFrame(takePicture())
             except:
                 image = rescaleFrame(cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (2).png"))
 
@@ -186,28 +187,28 @@ def MV(photoNumber) -> list[bool]:
     decisions = mainLoop()
     cv.destroyAllWindows()
 
-    try:
-        def publish():
-            broker = "192.168.1.10"
-            port = 1883
-            def on_publish(client, userdata, result):
-                pass
-
-            client1 = paho.Client("toSAV")
-            client1.on_publish = on_publish
-            client1.connect(broker, port)
-
-            string = str(decisions)
-            while True:
-                client1.publish('MT280/Group10', string) 
-                print(f'data sent {string}')
-                sleep(0.01)
-        publish()
-    except:
-        pass
-
     return decisions
+try:
+    def publish():
+        broker = "192.168.1.10"
+        port = 1883
+        def on_publish(client, userdata, result):
+            pass
 
-test = MV(0)
-print(test)
+        client1 = paho.Client("toSAV")
+        client1.on_publish = on_publish
+        client1.connect(broker, port)
+
+        string = str(MV())
+        while True:
+            client1.publish('MT280/Group10', string) 
+            print(f'data sent {string}')
+            sleep(0.01)
+    publish()
+    publish()
+except:
+    pass
+
+
+
 # MIGHT NOT HAVE ACCESS TO KEYBOARD AND MOUSE DURING RACE 
