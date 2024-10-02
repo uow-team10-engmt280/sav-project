@@ -1,3 +1,5 @@
+# PERFECT (needs testing however)
+
 from time import sleep
 import RPi.GPIO as GPIO # type: ignore
 
