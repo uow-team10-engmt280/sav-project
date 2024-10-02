@@ -42,26 +42,25 @@ FOR MATT'S PCB:
 
 For Reflectance Sensor:
         - GPIO11 --> Pin 1 
-        - GPIO17 --> Pin 2
+        - GPIO5 --> Pin 2
         - GPIO9 --> Pin 3
         - GPIO4 --> Pin 4
         - GPIO10 --> Pin 5
         - GPIO14 --> Pin 6
         - GPIO22 --> Pin 7
         - GPIO15 --> Pin 8
-        - GPIO27 --> Pin 9
+        - GPIO16 --> Pin 9
 
         - GPIO3 --> ODD control
         - GPIO2 --> EVEN control
     Note that pin 1 on the reflectance sensor is the one furthest to the left if actually looking at the sensors (IR LED and phototransistor facing you)
 
     To be used as OUTPUT:
-        - GPIO5 --> PHASEA (motor driver, ON/OFF)
-        - GPIO12 --> ENABLEA (motor driver, speed in %)
-        - GPIO19 --> PHASEB (motor driver, ON/OFF)
-        - GPIO13 --> ENABLEB (motor driver, speed in %)
-        - GPIO16 --> Small servo Control 1
-        - GPIO20 --> Small servo Control 2
+        - GPIO23 --> PHASEA (motor driver, ON/OFF)
+        - GPIO24 --> ENABLEA (motor driver, speed in %)
+        - GPIO27 --> PHASEB (motor driver, ON/OFF)
+        - GPIO17 --> ENABLEB (motor driver, speed in %)
+        - GPIO25 --> Small servo Control 
         - GPIO21 --> Large servo Control
     To be used as INPUT:
         - GPIO6 --> Range sensor output  

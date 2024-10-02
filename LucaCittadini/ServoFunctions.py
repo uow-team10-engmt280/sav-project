@@ -1,5 +1,4 @@
-from time import sleep, time
-from SystemLogic import SAV
+from time import sleep
 import RPi.GPIO as GPIO # type: ignore
 
 # NOTE Small servo angles go between 0 and 120 degrees, Large servo angles from 0 to 180 degrees
@@ -8,13 +7,31 @@ import RPi.GPIO as GPIO # type: ignore
 
 # NOTE 0 degrees is fully to the right, 120 and 180 are fully to the left for the small and large servos respectively
 
+def initServos(function): # TURN INTO DECORATOR AND PUT ON THE PICKUP/DROPOFF FUNCS
+    def wrapper(*args, **kwargs):
+        GPIO.setmode(GPIO.BCM)
+        smallServoCtrl = 25
+        largeServoCtrl = 21
+        GPIO.setup(smallServoCtrl, GPIO.OUT) 
+        GPIO.setup(largeServoCtrl, GPIO.OUT) 
+        pwmSmall = GPIO.PWM(smallServoCtrl, 50)
+        pwmLarge = GPIO.PWM(largeServoCtrl, 50)
+        return function(*args, **kwargs)
+    return wrapper
+
+
 def setSmallServo(angle: int) -> None:
+    pwmS.start(0)
     dutyCycle: float = 6.5 + (angle / 120) * 7 # should test
-    SAV.pwmSmall.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
+    pwmS.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
+    pwmS.stop()
+
 
 def setLargeServo(angle: int) -> None:
+    pwmL.start(0)
     dutyCycle: float = 2.5 + (angle / 180) * 10 # good
-    SAV.pwmLarge.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
+    pwmL.ChangeDutyCycle(dutyCycle) # going to need to change this, probably just directly refer to the pins
+    pwmL.stop()
 
 def pickUpLeft() -> None:
     setSmallServo(120)
@@ -40,6 +57,7 @@ def dropOffRight() -> None:
     setLargeServo(90)
     setSmallServo(20)
 
+@initServos
 def servoAction(turn, side) -> None:
     match turn:
         case False:

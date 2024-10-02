@@ -35,8 +35,10 @@ class SAV:
         # GPIO.setup(self.enableA, GPIO.OUT) 
         # GPIO.setup(self.phaseB, GPIO.OUT)
         # GPIO.setup(self.enableB, GPIO.OUT) 
+
         # GPIO.setup(self.largeServoCtrl, GPIO.OUT) 
         # GPIO.setup(self.smallServoCtrl, GPIO.OUT) 
+        
         # GPIO.setup(self.rangeSense, GPIO.IN) 
         
         # GPIO.output(self.phaseA, GPIO.LOW)

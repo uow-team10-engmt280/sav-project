@@ -1,6 +1,6 @@
 from time import time, sleep
 from MachineVisionLuca import MV
-# from ServoFunctions import servoAction
+from ServoFunctions import servoAction
 
 
 
