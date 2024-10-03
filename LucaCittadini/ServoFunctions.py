@@ -31,6 +31,7 @@ def setLargeServo(angle, pwmL=None) -> None:
     sleep(2)
     pwmL.stop()
 
+
 def pickUpLeft(pwmS=None, pwmL=None) -> None:
     setSmallServo(120, pwmS)
     setLargeServo(0, pwmL)

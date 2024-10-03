@@ -3,17 +3,14 @@ import cv2 as cv
 import numpy as np
 from picamera2 import Picamera2 # type: ignore # NOTE this is for taking the picture
 import paho.mqtt.client as paho # type: ignore # NOTE this is for subscribing
-from time import sleep
+from time import sleep, time
 # MQTT = Message Queuing Telemetry Transport
 
-def MV(remember=None) -> list[bool]:
+def MV() -> list[bool]:
     def takePicture(): 
         picam2 = Picamera2()
         picam2.configure(picam2.create_video_configuration(raw = {"size": (1640, 1232)}, main = {"size": (1280, 960), "format": 'RGB888'}))
         picam2.start()
-        picture  = picam2.capture_array()
-        picam2.stop()
-        return picture
 
     def rescaleFrame(frame, scale=0.50):
         width = int(frame.shape[1] * scale)
@@ -25,11 +22,7 @@ def MV(remember=None) -> list[bool]:
         def wrapper(): # should fix so that it makes sense, but it does it's function
             def nothing(placeHolder) -> None:
                 pass
-            try:
-                image = rescaleFrame(takePicture())
-            except:
-                image = rescaleFrame(cv.imread("C:/Users/LucaC/OneDrive/Documents/GitHub/sav-project/LucaCittadini/MachineVisionPictures/picCamTow (2).png"))
-
+            image = np.zeros()
             slidingMask = np.zeros((image.shape[0], image.shape[1], 3), dtype='uint8') # Makes an array the same size as the photo/picture
             # slidingMask = np.zeros((480, 640, 3), dtype='uint8')
             cv.namedWindow('Controls')
@@ -50,16 +43,32 @@ def MV(remember=None) -> list[bool]:
             cv.createTrackbar('Hue higher','Controls', 180, 180, nothing)
             cv.createTrackbar('Sat higher','Controls', 255, 255, nothing)
             cv.createTrackbar('Val higher','Controls', 255, 255, nothing)
-            return function(slidingMask, image) 
+            return function(slidingMask) 
         return wrapper
     
     @createWindows
     def mainLoop(S_mask, rimage) -> list[bool]:
         direction1 = []
         direction2 = []
+        picam2 = Picamera2()
+        picam2.configure(picam2.create_video_configuration(raw = {"size": (1640, 1232)}, main = {"size": (1280, 960), "format": 'RGB888'}))
+        picam2.start()
+        frequency = 60
+        startTime = time()
+        count = 0
         
         while True:
-            nonlocal remember
+            image = rescaleFrame(picam2.capture_array())
+            cv.imshow('Video Stream', image)
+            nowTime = time()
+            elaspedTime = nowTime - startTime
+            if elaspedTime > frequency:
+                fileName = f'Snap{str(count)}.png'
+                cv.imwrite(fileName, image)
+                count += 1
+                startTime = time()
+            if cv.waitKey(0) == 27:
+                break
             testH = cv.getTrackbarPos('H', 'Controls')
             testW = cv.getTrackbarPos('W', 'Controls')
             b = cv.getTrackbarPos('Find B', 'Controls')
@@ -69,103 +78,59 @@ def MV(remember=None) -> list[bool]:
             sc = cv.getTrackbarPos('Find Special R', 'Controls')
             stop = cv.getTrackbarPos('DIRECTIONS ACQUIRED', 'Controls')
 
-            if remember == None:
-                if b == 1:
-                    cv.setTrackbarPos('Hue lower','Controls', 31)
-                    cv.setTrackbarPos('Sat lower','Controls', 250)
-                    cv.setTrackbarPos('Val lower','Controls', 87)
-                    cv.setTrackbarPos('Hue higher','Controls', 180)
-                    cv.setTrackbarPos('Sat higher','Controls', 255)
-                    cv.setTrackbarPos('Val higher','Controls', 255)
-                    cv.setTrackbarPos('Find B','Controls', 0)
-                    remember = 'b'
-                elif g == 1:
-                    cv.setTrackbarPos('Hue lower','Controls', 25)
-                    cv.setTrackbarPos('Sat lower','Controls', 146)
-                    cv.setTrackbarPos('Val lower','Controls', 86)
-                    cv.setTrackbarPos('Hue higher','Controls', 90)
-                    cv.setTrackbarPos('Sat higher','Controls', 216)
-                    cv.setTrackbarPos('Val higher','Controls', 212)
-                    cv.setTrackbarPos('Find G','Controls', 0)
-                    remember = 'g'
-                elif r == 1:
-                    cv.setTrackbarPos('Hue lower','Controls', 0)
-                    cv.setTrackbarPos('Sat lower','Controls', 207)
-                    cv.setTrackbarPos('Val lower','Controls', 50)
-                    cv.setTrackbarPos('Hue higher','Controls', 21)
-                    cv.setTrackbarPos('Sat higher','Controls', 255)
-                    cv.setTrackbarPos('Val higher','Controls', 255)
-                    cv.setTrackbarPos('Find R','Controls', 0)
-                    remember = 'r'
-                elif y == 1: 
-                    cv.setTrackbarPos('Hue lower', 'Controls', 15)
-                    cv.setTrackbarPos('Sat lower', 'Controls', 210)
-                    cv.setTrackbarPos('Val lower', 'Controls', 50)
-                    cv.setTrackbarPos('Hue higher', 'Controls', 57)
-                    cv.setTrackbarPos('Sat higher', 'Controls', 255)
-                    cv.setTrackbarPos('Val higher', 'Controls', 230)
-                    cv.setTrackbarPos('Find Y', 'Controls', 0)
-                    remember = 'y'
-                elif sc == 1:
-                    cv.setTrackbarPos('Hue lower', 'Controls', 0)
-                    cv.setTrackbarPos('Sat lower', 'Controls', 210)
-                    cv.setTrackbarPos('Val lower', 'Controls', 50)
-                    cv.setTrackbarPos('Hue higher', 'Controls', 180)
-                    cv.setTrackbarPos('Sat higher', 'Controls', 250)
-                    cv.setTrackbarPos('Val higher', 'Controls', 255)
-                    cv.setTrackbarPos('Find Special R', 'Controls', 0)
-                    remember = 'sc'
-                else:
-                    hue_l = cv.getTrackbarPos('Hue lower','Controls')
-                    sat_l = cv.getTrackbarPos('Sat lower','Controls')
-                    val_l = cv.getTrackbarPos('Val lower','Controls')
-                    hue_h = cv.getTrackbarPos('Hue higher','Controls')
-                    sat_h = cv.getTrackbarPos('Sat higher','Controls')
-                    val_h = cv.getTrackbarPos('Val higher','Controls')
+            if b == 1:
+                cv.setTrackbarPos('Hue lower','Controls', 31)
+                cv.setTrackbarPos('Sat lower','Controls', 250)
+                cv.setTrackbarPos('Val lower','Controls', 87)
+                cv.setTrackbarPos('Hue higher','Controls', 180)
+                cv.setTrackbarPos('Sat higher','Controls', 255)
+                cv.setTrackbarPos('Val higher','Controls', 255)
+                cv.setTrackbarPos('Find B','Controls', 0)
+                
+            elif g == 1:
+                cv.setTrackbarPos('Hue lower','Controls', 25)
+                cv.setTrackbarPos('Sat lower','Controls', 146)
+                cv.setTrackbarPos('Val lower','Controls', 86)
+                cv.setTrackbarPos('Hue higher','Controls', 90)
+                cv.setTrackbarPos('Sat higher','Controls', 216)
+                cv.setTrackbarPos('Val higher','Controls', 212)
+                cv.setTrackbarPos('Find G','Controls', 0)
+                
+            elif r == 1:
+                cv.setTrackbarPos('Hue lower','Controls', 0)
+                cv.setTrackbarPos('Sat lower','Controls', 207)
+                cv.setTrackbarPos('Val lower','Controls', 50)
+                cv.setTrackbarPos('Hue higher','Controls', 21)
+                cv.setTrackbarPos('Sat higher','Controls', 255)
+                cv.setTrackbarPos('Val higher','Controls', 255)
+                cv.setTrackbarPos('Find R','Controls', 0)
+                
+            elif y == 1: 
+                cv.setTrackbarPos('Hue lower', 'Controls', 15)
+                cv.setTrackbarPos('Sat lower', 'Controls', 210)
+                cv.setTrackbarPos('Val lower', 'Controls', 50)
+                cv.setTrackbarPos('Hue higher', 'Controls', 57)
+                cv.setTrackbarPos('Sat higher', 'Controls', 255)
+                cv.setTrackbarPos('Val higher', 'Controls', 230)
+                cv.setTrackbarPos('Find Y', 'Controls', 0)
+                
+            elif sc == 1:
+                cv.setTrackbarPos('Hue lower', 'Controls', 0)
+                cv.setTrackbarPos('Sat lower', 'Controls', 210)
+                cv.setTrackbarPos('Val lower', 'Controls', 50)
+                cv.setTrackbarPos('Hue higher', 'Controls', 180)
+                cv.setTrackbarPos('Sat higher', 'Controls', 250)
+                cv.setTrackbarPos('Val higher', 'Controls', 255)
+                cv.setTrackbarPos('Find Special R', 'Controls', 0)
                 
             else:
-                match remember:
-                    case 'b':
-                        cv.setTrackbarPos('Hue lower','Controls', 31)
-                        cv.setTrackbarPos('Sat lower','Controls', 250)
-                        cv.setTrackbarPos('Val lower','Controls', 87)
-                        cv.setTrackbarPos('Hue higher','Controls', 180)
-                        cv.setTrackbarPos('Sat higher','Controls', 255)
-                        cv.setTrackbarPos('Val higher','Controls', 255)
-                        cv.setTrackbarPos('Find B','Controls', 0)
-                    case 'g':
-                        cv.setTrackbarPos('Hue lower','Controls', 25)
-                        cv.setTrackbarPos('Sat lower','Controls', 146)
-                        cv.setTrackbarPos('Val lower','Controls', 86)
-                        cv.setTrackbarPos('Hue higher','Controls', 90)
-                        cv.setTrackbarPos('Sat higher','Controls', 216)
-                        cv.setTrackbarPos('Val higher','Controls', 212)
-                        cv.setTrackbarPos('Find G','Controls', 0)
-                    case 'r':
-                        cv.setTrackbarPos('Hue lower','Controls', 0)
-                        cv.setTrackbarPos('Sat lower','Controls', 207)
-                        cv.setTrackbarPos('Val lower','Controls', 50)
-                        cv.setTrackbarPos('Hue higher','Controls', 21)
-                        cv.setTrackbarPos('Sat higher','Controls', 255)
-                        cv.setTrackbarPos('Val higher','Controls', 255)
-                        cv.setTrackbarPos('Find R','Controls', 0)
-                    case 'y':
-                        cv.setTrackbarPos('Hue lower', 'Controls', 0)
-                        cv.setTrackbarPos('Sat lower', 'Controls', 210)
-                        cv.setTrackbarPos('Val lower', 'Controls', 50)
-                        cv.setTrackbarPos('Hue higher', 'Controls', 180)
-                        cv.setTrackbarPos('Sat higher', 'Controls', 250)
-                        cv.setTrackbarPos('Val higher', 'Controls', 255)
-                        cv.setTrackbarPos('Find Special R', 'Controls', 0)
-                    case 'sc':
-                        cv.setTrackbarPos('Hue lower', 'Controls', 0)
-                        cv.setTrackbarPos('Sat lower', 'Controls', 210)
-                        cv.setTrackbarPos('Val lower', 'Controls', 50)
-                        cv.setTrackbarPos('Hue higher', 'Controls', 180)
-                        cv.setTrackbarPos('Sat higher', 'Controls', 250)
-                        cv.setTrackbarPos('Val higher', 'Controls', 255)
-                        cv.setTrackbarPos('Find Special R', 'Controls', 0)
-
+                hue_l = cv.getTrackbarPos('Hue lower','Controls')
+                sat_l = cv.getTrackbarPos('Sat lower','Controls')
+                val_l = cv.getTrackbarPos('Val lower','Controls')
+                hue_h = cv.getTrackbarPos('Hue higher','Controls')
+                sat_h = cv.getTrackbarPos('Sat higher','Controls')
+                val_h = cv.getTrackbarPos('Val higher','Controls')
+                
             cv.rectangle(S_mask, (int(rimage.shape[1]), int(rimage.shape[0])), (0,0), (255, 255, 255), -1)
             cv.rectangle(S_mask, (testW, testH), (0,0), (0, 0, 0), -1)
 
@@ -234,14 +199,13 @@ def MV(remember=None) -> list[bool]:
             if cv.waitKey(20) & stop == 1:
                     break
         if numBoxes == 2:
-            return [direction1, direction2], remember
+            return [direction1, direction2]
         else:
-            return direction1, remember
+            return direction1
     decisions = mainLoop()
     cv.destroyAllWindows()
 
     return decisions
-
 
 try:
     def publish():
@@ -263,9 +227,9 @@ try:
             count += 1
             if count == 20:
                 break
-    decision, colour = MV()
+    decision = MV()
     publish()
-    decision = MV(colour)
-    publish()
+    # decision = MV(colour)
+    # publish()
 except:
     pass
